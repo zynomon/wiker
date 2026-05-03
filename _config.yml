@@ -1,0 +1,28 @@
+title: "Wiker"
+
+header_bg: "/assets/header-bg.jpg"
+
+header_logo: "/assets/logo.svg"
+
+footer_logo: "/assets/footer-logo.svg"
+
+footer_links:
+  - label: "Apache 2.0"
+    url: "https://www.apache.org/licenses/LICENSE-2.0"
+  - label: "Github"
+    url: "https://github.com/example/repo"
+  - label: "Discord"
+    url: "https://discord.gg/example"
+
+nav_links:
+  - label: "home"
+    url: "/"
+    icon: "/icons/home.svg"
+  - label: "docs"
+    url: "/docs/"
+    icon: "/icons/docs.svg"
+  - label: "github"
+    url: "https://github.com/example/repo"
+    icon: "/icons/github.svg"
+
+permalink: pretty
