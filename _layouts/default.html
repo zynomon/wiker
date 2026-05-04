@@ -24,12 +24,13 @@
     .hdr {
       width: 100%; z-index: 1000; background: var(--pn) url('{{ site.header.bg }}') center/cover;
       border-radius: 20px; border: 1px solid var(--bd); margin-bottom: 2rem;
-      box-shadow: inset -4px -4px 8px var(--it), inset 4px 4px 8px var(--ht);
+      box-shadow: inset -8px -8px 20px var(--it), inset 8px 8px 20px var(--ht), 0 8px 32px var(--sd);
       position: relative; overflow: hidden; flex-shrink: 0;
+      user-select: none; -webkit-user-select: none;
     }
     .hdr-ov { background: rgba(var(--pn), 0.85); backdrop-filter: blur(14px); }
 
-    .sticky { position: sticky; top: 1rem; box-shadow: 0 15px 40px var(--sd), inset -4px -4px 8px var(--it), inset 4px 4px 8px var(--ht); }
+    .sticky { position: sticky; top: 1rem; box-shadow: 0 15px 40px var(--sd), inset -8px -8px 20px var(--it), inset 8px 8px 20px var(--ht); }
 
     .h-top { display: flex; align-items: center; justify-content: space-between; padding: 0.6rem 1.4rem; min-height: 56px; }
     .h-btm { display: flex; gap: 4px; padding: 0 1.4rem 0.8rem; flex-wrap: wrap; overflow: hidden; height: auto; opacity: 1; }
@@ -79,6 +80,17 @@
     .code-copy:active { transform: scale(0.9); box-shadow: inset 2px 2px 4px var(--it); }
     .code-copy.did-copy { color: var(--ac); }
     .code-copy svg { width: 14px; height: 14px; pointer-events: none; display: block; }
+
+    pre { margin: 0.5rem 0; padding: 0.55rem 0.8rem; overflow-x: auto; border-radius: 10px; border: 1px solid var(--bd); background: var(--wl); box-shadow: inset 2px 2px 6px var(--it), inset -2px -2px 6px var(--ht); line-height: 1.55; }
+    code { font-size: 0.82em; padding: 0.1em 0.35em; border-radius: 5px; border: 1px solid var(--bd); background: var(--wl); box-shadow: inset 1px 1px 3px var(--it), inset -1px -1px 3px var(--ht); }
+    pre code { padding: 0; border: none; background: none; box-shadow: none; font-size: 0.82rem; display: block; }
+
+    table { width: 100%; border-collapse: separate; border-spacing: 0; margin: 0.75rem 0; border-radius: 10px; border: 1px solid var(--bd); overflow: hidden; box-shadow: 4px 4px 12px var(--sd), inset -2px -2px 6px var(--it), inset 2px 2px 6px var(--ht); }
+    thead { background: var(--wl); box-shadow: inset -2px -2px 4px var(--it), inset 2px 2px 4px var(--ht); }
+    th { padding: 0.5rem 0.8rem; text-align: left; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--tx); border-bottom: 1px solid var(--bd); }
+    td { padding: 0.5rem 0.8rem; font-size: 0.82rem; border-bottom: 1px solid var(--bd); }
+    tbody tr:last-child td { border-bottom: none; }
+    tbody tr:hover { background: var(--wl); }
 
     @media (max-width: 786px) {
       .rel-path { display: none; }
@@ -218,13 +230,19 @@
           </a>
 
           <div class="rel-path">
-            {% assign path_parts = page.path | split: '/' %}
-            {% for part in path_parts %}
+            {% assign url_parts = page.url | split: '/' %}
+            {% assign cumulative = '' %}
+            {% for part in url_parts %}
+              {% if part == '' %}{% continue %}{% endif %}
+              {% assign cumulative = cumulative | append: '/' | append: part %}
+              {% assign is_last = forloop.last %}
+              {% assign is_index = false %}
+              {% if part == 'index.html' or part == 'index.htm' %}{% assign is_index = true %}{% endif %}
               <span class="sep">/</span>
-              {% if forloop.last %}
-                <b>{{ part }}</b>
+              {% if is_last %}
+                {% unless is_index %}<b>{{ part }}</b>{% endunless %}
               {% else %}
-                <a href="#">{{ part }}</a>
+                <a href="{{ cumulative | relative_url }}">{{ part }}</a>
               {% endif %}
             {% endfor %}
           </div>
