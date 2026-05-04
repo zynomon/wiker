@@ -1,221 +1,333 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ page.lang | default: 'en' }}" data-theme="light">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{{ page.title }}</title>
-  <meta name="description" content="{{ page.description }}">
-  <meta property="og:title"        content="{{ page.title }}">
-  <meta property="og:description"  content="{{ page.description }}">
-  <meta property="og:image"        content="{{ '/assets/thumb.png' | relative_url }}">
-  <meta property="og:image:width"  content="1200">
-  <meta property="og:image:height" content="630">
-  <meta property="og:type"         content="website">
-  <meta property="og:url"          content="{{ page.url | absolute_url }}">
-  <meta property="og:site_name"    content="{{ site.title }}">
-  <meta name="twitter:card"        content="summary_large_image">
-  <meta name="twitter:title"       content="{{ page.title }}">
-  <meta name="twitter:description" content="{{ page.description }}">
-  <meta name="twitter:image"       content="{{ '/assets/thumb.png' | relative_url }}">
-  <meta name="theme-color"         content="{{ page.color }}">
-  <meta property="og:image:alt"    content="{{ page.title }}">
-  <meta name="twitter:image:alt"   content="{{ page.title }}">
+  <title>{{ page.title | default: site.title }}</title>
+  {%- seo -%}
+  <style>
+    :root[data-theme='light'] { --bg: #dce1e8; --pn: #f1f4f8; --tx: #2d3436; --bd: rgba(0,0,0,0.06); --sd: rgba(100,115,145,0.3); --ht: #ffffff; --it: rgba(0,0,0,0.07); --ac: #2563eb; --wl: #e8ebf2; }
+    :root[data-theme='dark']  { --bg: #0d0e12; --pn: #1a1c22; --tx: #e1e4e8; --bd: rgba(255,255,255,0.03); --sd: rgba(0,0,0,0.65); --ht: rgba(255,255,255,0.06); --it: rgba(0,0,0,0.4); --ac: #3b82f6; --wl: #121418; }
 
-  {% if page.icon %}
-  <link rel="icon" type="image/svg+xml" href="{{ '/icons/' | append: page.icon | relative_url }}">
-  {% endif %}
+    * { box-sizing: border-box; transition: background .3s, color .3s, transform .2s, opacity .3s, height .3s, padding .3s, box-shadow .3s; }
+    body { margin: 0; font-family: -apple-system, system-ui, sans-serif; background: var(--bg); color: var(--tx); font-size: 13px; line-height: 1.5; min-height: 100vh; display: flex; justify-content: center; }
 
-  <script>
-    (function(){
-      try {
-        var t = localStorage.getItem('theme');
-        if (t) document.documentElement.setAttribute('data-theme', t);
-        else if (window.matchMedia('(prefers-color-scheme: light)').matches)
-          document.documentElement.setAttribute('data-theme', 'light');
-      } catch(e){}
-    })();
-  </script>
+    .bg-custom { position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; }
 
-  <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
+    .pnl {
+      width: 97%; max-width: 1440px; margin: 2rem 0; background: var(--pn);
+      border-radius: 32px; border: 1px solid var(--bd); padding: 1.5rem;
+      box-shadow: 20px 20px 60px var(--sd), inset -8px -8px 16px var(--it), inset 8px 8px 16px var(--ht);
+      display: flex; flex-direction: column; min-height: 94vh; position: relative;
+    }
+
+    .hdr {
+      width: 100%; z-index: 1000; background: var(--pn) url('{{ site.header.bg }}') center/cover;
+      border-radius: 20px; border: 1px solid var(--bd); margin-bottom: 2rem;
+      box-shadow: inset -4px -4px 8px var(--it), inset 4px 4px 8px var(--ht);
+      position: relative; overflow: hidden; flex-shrink: 0;
+    }
+    .hdr-ov { background: rgba(var(--pn), 0.85); backdrop-filter: blur(14px); }
+
+    .sticky { position: sticky; top: 1rem; box-shadow: 0 15px 40px var(--sd), inset -4px -4px 8px var(--it), inset 4px 4px 8px var(--ht); }
+
+    .h-top { display: flex; align-items: center; justify-content: space-between; padding: 0.6rem 1.4rem; min-height: 56px; }
+    .h-btm { display: flex; gap: 4px; padding: 0 1.4rem 0.8rem; flex-wrap: wrap; overflow: hidden; height: auto; opacity: 1; }
+
+    .sticky:not(:hover) .h-btm, .sticky:not(:hover) .rel-path { height: 0; padding: 0; opacity: 0; pointer-events: none; }
+
+    .h-logo { height: 44px; padding: 0 12px; display: flex; align-items: center; text-decoration: none; flex-shrink: 0; }
+    .f-logo { display: flex; align-items: center; flex-shrink: 0; height: {{ site.footer.logo.height | default: '36px' }}; width: {{ site.footer.logo.width | default: 'auto' }}; }
+    img { border: none !important; outline: none !important; max-height: 100%; width: auto; }
+
+    .rel-path { font-weight: 700; opacity: 0.4; margin-right: auto; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: center; }
+    .rel-path a { text-decoration: none; color: inherit; }
+    .rel-path a:hover { text-decoration: underline; opacity: 1; }
+    .sep { opacity: 0.2; font-weight: 300; padding: 0 4px; }
+
+    .a-lnk { padding: 8px 12px; text-decoration: none; color: inherit; font-weight: 600; display: flex; align-items: center; position: relative; }
+    .a-lnk span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    .a-lnk::after { content: ''; position: absolute; bottom: 2px; left: 50%; width: 0; height: 2px; background: var(--ac); transition: width 0.3s, left 0.3s; }
+    .a-lnk:hover::after { width: 80%; left: 10%; }
+
+    .a-lnk img { width: 0; height: 16px; opacity: 0; filter: brightness(0) invert(1); transition: all 0.25s; }
+    .a-lnk:hover img { width: 16px; opacity: 1; margin-right: 8px; transform: scale(1.3) rotate(-14deg); filter: none; }
+
+    .util { display: flex; gap: 8px; flex-shrink: 0; }
+    .c-btn { width: 34px; height: 34px; border-radius: 50%; border: none; cursor: pointer; background: var(--wl); color: var(--tx); display: flex; align-items: center; justify-content: center; box-shadow: 4px 4px 8px var(--sd), inset -2px -2px 4px var(--it), inset 2px 2px 4px var(--ht); }
+    .c-btn:active { transform: scale(0.9); }
+    .active { color: #fff !important; background: var(--ac) !important; box-shadow: inset -2px -2px 4px rgba(0,0,0,0.2) !important; }
+
+    main { flex: 1; padding: 1rem; background: transparent; color: inherit; }
+
+    .ftr { margin-top: auto; padding: 2rem 1rem 1rem; }
+    .hr { height: 1px; background: var(--bd); margin-bottom: 2rem; box-shadow: 0 1px 0 var(--ht); }
+    .ftr-c { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
+
+    .code-wrap { position: relative; }
+    .code-copy {
+      position: absolute; top: 0.5rem; right: 0.5rem;
+      width: 28px; height: 28px; border-radius: 6px; border: 1px solid var(--bd);
+      background: var(--wl); color: var(--tx); cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; transition: opacity .2s, transform .15s, box-shadow .15s;
+      box-shadow: 2px 2px 6px var(--sd), inset -1px -1px 3px var(--it), inset 1px 1px 3px var(--ht);
+      z-index: 1;
+    }
+    .code-wrap:hover .code-copy { opacity: 1; }
+    .code-copy:active { transform: scale(0.9); box-shadow: inset 2px 2px 4px var(--it); }
+    .code-copy.did-copy { color: var(--ac); }
+    .code-copy svg { width: 14px; height: 14px; pointer-events: none; display: block; }
+
+    @media (max-width: 786px) {
+      .rel-path { display: none; }
+      .a-lnk span { max-width: 80px; }
+      .h-btm { padding: 0 0.5rem 0.5rem; }
+      .code-copy { opacity: 1; }
+    }
+
+    [data-theme='light'] .d-only, [data-theme='dark'] .l-only { display: none; }
+  </style>
+
+  <style>
+    .highlight pre { margin: 0; padding: 1rem 1.2rem; overflow-x: auto; border-radius: 12px; font-size: 0.82rem; line-height: 1.6; font-family: ui-monospace, "Cascadia Code", "Fira Code", "Consolas", monospace; }
+    .highlight .hll { display: block; }
+
+    :root[data-theme='light'] .highlight pre { background: #f6f8fa; color: #24292e; }
+    :root[data-theme='light'] .highlight .c,
+    :root[data-theme='light'] .highlight .c1,
+    :root[data-theme='light'] .highlight .cm,
+    :root[data-theme='light'] .highlight .cs,
+    :root[data-theme='light'] .highlight .cp  { color: #6a737d; font-style: italic; }
+    :root[data-theme='light'] .highlight .k,
+    :root[data-theme='light'] .highlight .kd,
+    :root[data-theme='light'] .highlight .kn,
+    :root[data-theme='light'] .highlight .kp,
+    :root[data-theme='light'] .highlight .kr,
+    :root[data-theme='light'] .highlight .kt  { color: #d73a49; font-weight: 600; }
+    :root[data-theme='light'] .highlight .s,
+    :root[data-theme='light'] .highlight .s1,
+    :root[data-theme='light'] .highlight .s2,
+    :root[data-theme='light'] .highlight .sb,
+    :root[data-theme='light'] .highlight .sc,
+    :root[data-theme='light'] .highlight .sd,
+    :root[data-theme='light'] .highlight .se,
+    :root[data-theme='light'] .highlight .sh,
+    :root[data-theme='light'] .highlight .si,
+    :root[data-theme='light'] .highlight .sx,
+    :root[data-theme='light'] .highlight .sr,
+    :root[data-theme='light'] .highlight .ss  { color: #032f62; }
+    :root[data-theme='light'] .highlight .m,
+    :root[data-theme='light'] .highlight .mb,
+    :root[data-theme='light'] .highlight .mf,
+    :root[data-theme='light'] .highlight .mh,
+    :root[data-theme='light'] .highlight .mi,
+    :root[data-theme='light'] .highlight .mo,
+    :root[data-theme='light'] .highlight .il  { color: #005cc5; }
+    :root[data-theme='light'] .highlight .na,
+    :root[data-theme='light'] .highlight .nb,
+    :root[data-theme='light'] .highlight .nc,
+    :root[data-theme='light'] .highlight .nd,
+    :root[data-theme='light'] .highlight .ni,
+    :root[data-theme='light'] .highlight .ne,
+    :root[data-theme='light'] .highlight .nf,
+    :root[data-theme='light'] .highlight .nl,
+    :root[data-theme='light'] .highlight .nn,
+    :root[data-theme='light'] .highlight .nt,
+    :root[data-theme='light'] .highlight .nv,
+    :root[data-theme='light'] .highlight .bp,
+    :root[data-theme='light'] .highlight .vc,
+    :root[data-theme='light'] .highlight .vg,
+    :root[data-theme='light'] .highlight .vi  { color: #6f42c1; }
+    :root[data-theme='light'] .highlight .o,
+    :root[data-theme='light'] .highlight .ow  { color: #d73a49; }
+    :root[data-theme='light'] .highlight .p   { color: #24292e; }
+    :root[data-theme='light'] .highlight .gh,
+    :root[data-theme='light'] .highlight .gu  { color: #005cc5; font-weight: 700; }
+    :root[data-theme='light'] .highlight .gi  { color: #22863a; background: #f0fff4; }
+    :root[data-theme='light'] .highlight .gd  { color: #b31d28; background: #ffeef0; }
+
+    :root[data-theme='dark'] .highlight pre  { background: #0d1117; color: #c9d1d9; }
+    :root[data-theme='dark'] .highlight .c,
+    :root[data-theme='dark'] .highlight .c1,
+    :root[data-theme='dark'] .highlight .cm,
+    :root[data-theme='dark'] .highlight .cs,
+    :root[data-theme='dark'] .highlight .cp  { color: #8b949e; font-style: italic; }
+    :root[data-theme='dark'] .highlight .k,
+    :root[data-theme='dark'] .highlight .kd,
+    :root[data-theme='dark'] .highlight .kn,
+    :root[data-theme='dark'] .highlight .kp,
+    :root[data-theme='dark'] .highlight .kr,
+    :root[data-theme='dark'] .highlight .kt  { color: #ff7b72; font-weight: 600; }
+    :root[data-theme='dark'] .highlight .s,
+    :root[data-theme='dark'] .highlight .s1,
+    :root[data-theme='dark'] .highlight .s2,
+    :root[data-theme='dark'] .highlight .sb,
+    :root[data-theme='dark'] .highlight .sc,
+    :root[data-theme='dark'] .highlight .sd,
+    :root[data-theme='dark'] .highlight .se,
+    :root[data-theme='dark'] .highlight .sh,
+    :root[data-theme='dark'] .highlight .si,
+    :root[data-theme='dark'] .highlight .sx,
+    :root[data-theme='dark'] .highlight .sr,
+    :root[data-theme='dark'] .highlight .ss  { color: #a5d6ff; }
+    :root[data-theme='dark'] .highlight .m,
+    :root[data-theme='dark'] .highlight .mb,
+    :root[data-theme='dark'] .highlight .mf,
+    :root[data-theme='dark'] .highlight .mh,
+    :root[data-theme='dark'] .highlight .mi,
+    :root[data-theme='dark'] .highlight .mo,
+    :root[data-theme='dark'] .highlight .il  { color: #79c0ff; }
+    :root[data-theme='dark'] .highlight .na,
+    :root[data-theme='dark'] .highlight .nb,
+    :root[data-theme='dark'] .highlight .nc,
+    :root[data-theme='dark'] .highlight .nd,
+    :root[data-theme='dark'] .highlight .ni,
+    :root[data-theme='dark'] .highlight .ne,
+    :root[data-theme='dark'] .highlight .nf,
+    :root[data-theme='dark'] .highlight .nl,
+    :root[data-theme='dark'] .highlight .nn,
+    :root[data-theme='dark'] .highlight .nt,
+    :root[data-theme='dark'] .highlight .nv,
+    :root[data-theme='dark'] .highlight .bp,
+    :root[data-theme='dark'] .highlight .vc,
+    :root[data-theme='dark'] .highlight .vg,
+    :root[data-theme='dark'] .highlight .vi  { color: #d2a8ff; }
+    :root[data-theme='dark'] .highlight .o,
+    :root[data-theme='dark'] .highlight .ow  { color: #ff7b72; }
+    :root[data-theme='dark'] .highlight .p   { color: #c9d1d9; }
+    :root[data-theme='dark'] .highlight .gh,
+    :root[data-theme='dark'] .highlight .gu  { color: #79c0ff; font-weight: 700; }
+    :root[data-theme='dark'] .highlight .gi  { color: #aff5b4; background: #033a16; }
+    :root[data-theme='dark'] .highlight .gd  { color: #ffdcd7; background: #67060c; }
+  </style>
+
+  {{ page.head_extra }}
 </head>
 <body>
+  <div class="bg-custom">{{ site.background-html }}</div>
 
-{% if page.bg %}
-<div class="page-bg" aria-hidden="true">
-  <img src="{{ page.bg | relative_url }}" alt="">
-</div>
-{% endif %}
+  <div class="pnl">
+    <header class="hdr" id="h">
+      <div class="hdr-ov">
+        <div class="h-top">
 
-<div class="frame">
+          <a href="{{ '/' | relative_url }}" class="h-logo">
+            {% if site.header.logo %}<img src="{{ site.header.logo | relative_url }}" alt="">{% endif %}
+          </a>
 
-  <header id="site-header">
+          <div class="rel-path">
+            {% assign path_parts = page.path | split: '/' %}
+            {% for part in path_parts %}
+              <span class="sep">/</span>
+              {% if forloop.last %}
+                <b>{{ part }}</b>
+              {% else %}
+                <a href="#">{{ part }}</a>
+              {% endif %}
+            {% endfor %}
+          </div>
 
-    <div class="header-band">
-      {% if site.header_bg %}
-      <img src="{{ site.header_bg | relative_url }}" class="header-band-img" alt="" aria-hidden="true">
-      {% endif %}
+          <div class="util">
+            <button class="c-btn" id="pB" title="Pin"><svg viewBox="0 0 24 24" width="16"><path fill="currentColor" d="M16,12V4H17V2H7V4H8V12L6,14V16H11.2V22H12.8V16H18V14L16,12Z"/></svg></button>
+            <button class="c-btn" id="tB" title="Theme">
+              <svg class="l-only" viewBox="0 0 24 24" width="16"><path fill="currentColor" d="M12,18c-3.3,0-6-2.7-6-6s2.7-6,6-6s6,2.7,6,6S15.3,18,12,18zM11,1h2v3h-2V1z M11,20h2v3h-2V20z M3.5,4.9l1.4-1.4l2.1,2.1L5.6,7.1L3.5,4.9z M16.9,18.3l1.4-1.4l2.1,2.1l-1.4,1.4L16.9,18.3z M1,11h3v2H1V11z M20,11h3v2h-3V11z M4.9,20.5l-1.4-1.4l2.1-2.1l1.4,1.4L4.9,20.5z M18.3,7.1l-1.4-1.4l2.1-2.1l1.4,1.4L18.3,7.1z"/></svg>
+              <svg class="d-only" viewBox="0 0 24 24" width="16"><path fill="currentColor" d="M12,3c-4.97,0-9,4.03-9,9s4.03,9,9,9s9-4.03,9-9c0-0.46-0.04-0.92-0.1-1.36c-0.98,1.37-2.58,2.26-4.4,2.26 c-2.98,0-5.4-2.42-5.4-5.4c0-1.81,0.89-3.42,2.26-4.4C12.92,3.04,12.46,3,12,3z"/></svg>
+            </button>
+          </div>
+        </div>
 
-      {% if site.header_logo %}
-      <img src="{{ site.header_logo | relative_url }}" class="header-logo" alt="{{ site.title }}">
-      {% else %}
-      <span class="header-wordmark">{{ site.title }}</span>
-      {% endif %}
-
-      <span class="header-path" aria-hidden="true">{{ page.url }}</span>
-
-      <div class="header-controls">
-        <button class="ctrl-btn" id="ctrl-theme" aria-label="toggle theme">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-        </button>
-        <button class="ctrl-btn" id="ctrl-pin" aria-label="pin header">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="12" y1="17" x2="12" y2="22"/><path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24Z"/></svg>
-        </button>
+        <nav class="h-btm">
+          {% assign h_links = site.header.a | sort: 'order' %}
+          {% for link in h_links %}
+            <a href="{{ link.url | relative_url }}" class="a-lnk">
+              {% if link.icon %}<img src="{{ link.icon | relative_url }}">{% endif %}
+              <span>{{ link.text }}</span>
+            </a>
+          {% endfor %}
+        </nav>
       </div>
-    </div>
+    </header>
 
-    {% if page.nav_links or site.nav_links %}
-    {% assign _nav = page.nav_links | default: site.nav_links %}
-    <nav class="header-nav" aria-label="site navigation">
-      {% for item in _nav %}
-      <a href="{{ item.url }}"
-         {% if item.url contains 'http' %}target="_blank" rel="noopener noreferrer"{% endif %}
-         {% if page.url == item.url %}aria-current="page"{% endif %}>
-        {% if item.icon %}<img src="{{ item.icon | relative_url }}" class="nav-icon" alt="" aria-hidden="true">{% endif %}
-        {{ item.label }}
-      </a>
-      {% endfor %}
-    </nav>
-    {% endif %}
+    <main>{{ content }}</main>
 
-  </header>
-
-  <main>
-    {{ content }}
-  </main>
-
-  <footer>
-
-    <hr>
-    <div class="footer-row">
-
-      {% if site.footer_logo %}
-      <img src="{{ site.footer_logo | relative_url }}" class="footer-logo" alt="{{ site.title }}">
-      {% endif %}
-
-      {% if site.footer_links %}
-      <div class="footer-links">
-        {% for item in site.footer_links %}
-        <a href="{{ item.url }}"
-           {% if item.url contains 'http' %}target="_blank" rel="noopener noreferrer"{% endif %}>
-          {{ item.label }}
-        </a>
-        {% endfor %}
+    <footer class="ftr">
+      <div class="hr"></div>
+      <div class="ft-c">
+        <div class="f-logo">
+          {% if site.footer.logo.link %}<img src="{{ site.footer.logo.link | relative_url }}" alt="">{% endif %}
+        </div>
+        <nav class="util" style="margin:0; opacity:0.6">
+          {% assign f_links = site.footer.a | sort: 'order' %}
+          {% for link in f_links %}
+            <a href="{{ link.url | relative_url }}" class="a-lnk"><span>{{ link.text }}</span></a>
+          {% endfor %}
+        </nav>
       </div>
-      {% endif %}
-    </div>
-  </footer>
+    </footer>
+    <div align="center" style="opacity:0.4; font-weight:600">{{ site.footer.notice-text }}</div>
+  </div>
 
-</div>
+  <script>
+    const r = document.documentElement, h = document.getElementById('h');
 
-<script>
-(function () {
-  var R      = document.documentElement;
-  var hdr    = document.getElementById('site-header');
-  var pinBtn = document.getElementById('ctrl-pin');
-  var thmBtn = document.getElementById('ctrl-theme');
+    const trySave = (key, val) => {
+      if (localStorage.getItem('consent') === 'true') {
+        localStorage.setItem(key, val);
+      } else if (!sessionStorage.getItem('denied')) {
+        if (confirm("this site wants to save this preference in your device are you okay with it? this is also referred as \"cookie\".")) {
+          localStorage.setItem('consent', 'true');
+          localStorage.setItem(key, val);
+        } else {
+          sessionStorage.setItem('denied', 'true');
+        }
+      }
+    };
 
-  if (!hdr) return;
+    document.getElementById('tB').onclick = () => {
+      const v = r.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      r.setAttribute('data-theme', v);
+      trySave('th', v);
+    };
 
-  function store(k, v) { try { localStorage.setItem(k, v); } catch(e){} }
-  function recall(k)   { try { return localStorage.getItem(k); } catch(e){ return null; } }
+    document.getElementById('pB').onclick = () => {
+      const s = !h.classList.contains('sticky');
+      h.classList.toggle('sticky', s);
+      document.getElementById('pB').classList.toggle('active', s);
+      trySave('pi', s);
+    };
 
-  var pinned = recall('pin') === '1';
-  if (pinned) hdr.classList.add('is-pinned');
+    const st = localStorage.getItem('th'), sp = localStorage.getItem('pi');
+    if (st) r.setAttribute('data-theme', st);
+    else if (window.matchMedia('(prefers-color-scheme: dark)').matches) r.setAttribute('data-theme', 'dark');
+    if (sp === 'true') { h.classList.add('sticky'); document.getElementById('pB').classList.add('active'); }
 
-  if (pinBtn) {
-    if (pinned) pinBtn.classList.add('is-active');
-    pinBtn.addEventListener('click', function () {
-      pinned = !pinned;
-      hdr.classList.toggle('is-pinned', pinned);
-      pinBtn.classList.toggle('is-active', pinned);
-      store('pin', pinned ? '1' : '0');
+    const COPY  = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+    const CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>';
+
+    document.querySelectorAll('pre code').forEach(c => {
+      const pre = c.parentElement;
+      if (pre.parentElement.classList.contains('code-wrap')) return;
+      const wrap = document.createElement('div');
+      wrap.className = 'code-wrap';
+      pre.parentNode.insertBefore(wrap, pre);
+      wrap.appendChild(pre);
+      const btn = document.createElement('button');
+      btn.className = 'code-copy';
+      btn.setAttribute('aria-label', 'copy code');
+      btn.innerHTML = COPY;
+      btn.onclick = () => {
+        if (!navigator.clipboard) return;
+        navigator.clipboard.writeText(c.textContent).then(() => {
+          btn.innerHTML = CHECK;
+          btn.classList.add('did-copy');
+          setTimeout(() => { btn.innerHTML = COPY; btn.classList.remove('did-copy'); }, 2000);
+        }).catch(() => {});
+      };
+      wrap.appendChild(btn);
     });
-  }
-
-  if (thmBtn) {
-    thmBtn.addEventListener('click', function () {
-      var next = R.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
-      R.setAttribute('data-theme', next);
-      store('theme', next);
-    });
-  }
-
-  var tick = false;
-  window.addEventListener('scroll', function () {
-    if (tick) return;
-    tick = true;
-    requestAnimationFrame(function () {
-      hdr.classList.toggle('is-scrolled', window.scrollY > 40);
-      tick = false;
-    });
-  }, { passive: true });
-
-  document.querySelectorAll('.header-nav a').forEach(function (a) {
-    var icon = a.querySelector('.nav-icon');
-    if (!icon) return;
-
-    a.addEventListener('mouseenter', function () {
-      icon.style.transition = 'opacity 0.15s ease, transform 0.15s ease';
-      icon.style.opacity    = '1';
-      icon.style.transform  = 'scale(1) translateY(0)';
-    });
-
-    a.addEventListener('mousemove', function (e) {
-      var r  = a.getBoundingClientRect();
-      var mx = (e.clientX - r.left) / r.width  - 0.5;
-      var my = (e.clientY - r.top)  / r.height - 0.5;
-
-      icon.style.transition = 'opacity 0.15s ease';
-      icon.style.transform  = 'perspective(400px) rotateX(' + (-my * 20) + 'deg) rotateY(' + (mx * 20) + 'deg) scale(1.1)';
-    });
-
-    a.addEventListener('mouseleave', function () {
-      icon.style.transition = 'opacity 0.15s ease, transform 0.15s ease';
-      icon.style.opacity    = '0';
-      icon.style.transform  = 'scale(0.7) translateY(4px)';
-    });
-  });
-
-  var COPY  = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
-  var CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>';
-
-  document.querySelectorAll('pre code').forEach(function (c) {
-    var pre = c.parentElement;
-    if (pre.parentElement.classList.contains('code-wrap')) return;
-    var wrap = document.createElement('div');
-    wrap.className = 'code-wrap';
-    pre.parentNode.insertBefore(wrap, pre);
-    wrap.appendChild(pre);
-    var btn = document.createElement('button');
-    btn.className = 'code-copy';
-    btn.setAttribute('aria-label', 'copy code');
-    btn.innerHTML = COPY;
-    btn.addEventListener('click', function () {
-      if (!navigator.clipboard) return;
-      navigator.clipboard.writeText(c.textContent).then(function () {
-        btn.innerHTML = CHECK;
-        btn.classList.add('did-copy');
-        setTimeout(function () {
-          btn.innerHTML = COPY;
-          btn.classList.remove('did-copy');
-        }, 2000);
-      }).catch(function () {});
-    });
-    wrap.appendChild(btn);
-  });
-
-})();
-</script>
-
+  </script>
+  {{ page.foot_extra }}
 </body>
 </html>
