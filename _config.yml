@@ -52,3 +52,4 @@ kramdown:
 
 plugins:
   - jekyll-seo-tag
+  - jekyll-remote-theme
