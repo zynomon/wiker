@@ -81,9 +81,10 @@
     .code-copy.did-copy { color: var(--ac); }
     .code-copy svg { width: 14px; height: 14px; pointer-events: none; display: block; }
 
-    pre { margin: 0.5rem 0; padding: 0.55rem 0.8rem; overflow-x: auto; border-radius: 10px; border: 1px solid var(--bd); background: var(--wl); box-shadow: inset 2px 2px 6px var(--it), inset -2px -2px 6px var(--ht); line-height: 1.55; }
-    code { font-size: 0.82em; padding: 0.1em 0.35em; border-radius: 5px; border: 1px solid var(--bd); background: var(--wl); box-shadow: inset 1px 1px 3px var(--it), inset -1px -1px 3px var(--ht); }
-    pre code { padding: 0; border: none; background: none; box-shadow: none; font-size: 0.82rem; display: block; }
+    pre, code { background: var(--wl); border: 1px solid var(--bd); border-radius: 6px; font-size: 0.82rem; box-shadow: inset 2px 2px 5px var(--it), inset -2px -2px 5px var(--ht); }
+    pre { padding: 0.4rem 0.6rem; margin: 0.2rem 0; overflow-x: auto; }
+    code { padding: 0.1em 0.3em; }
+    pre code { all: unset; }
 
     table { width: 100%; border-collapse: separate; border-spacing: 0; margin: 0.75rem 0; border-radius: 10px; border: 1px solid var(--bd); overflow: hidden; box-shadow: 4px 4px 12px var(--sd), inset -2px -2px 6px var(--it), inset 2px 2px 6px var(--ht); }
     thead { background: var(--wl); box-shadow: inset -2px -2px 4px var(--it), inset 2px 2px 4px var(--ht); }
