@@ -1,431 +1,457 @@
-<!DOCTYPE html>
-<html lang="{{ page.lang | default: 'en' }}"
-      data-theme="dark"
-      data-accent="{{ page.accent | default: site.accent | default: 'dark-grey' }}">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+<!doctype html>
+<html
+    lang="{{ page.lang | default: 'en' }}"
+    data-theme="dark"
+    data-accent="{{ page.accent | default: site.accent | default: 'dark-grey' }}"
+>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  {% assign _title = page.title | default: site.title %}
-  {% unless _title %}
-  {% assign _raw   = content | strip_html | strip_newlines %}
-  {% assign _title = _raw | split: '.' | first | truncate: 60 %}
-  {% endunless %}
-  {% assign _desc = page.description | default: site.description %}
-  {% unless _desc %}
-  {% assign _raw  = content | strip_html | strip_newlines %}
-  {% assign _desc = _raw | truncatewords: 200 %}
-  {% endunless %}
-  {% assign _img = page.image | default: site.image %}
+        <title>{{ page.title | default: site.title }}</title>
+        <meta
+            name="description"
+            content="{{ page.description | default: site.description }}"
+        />
 
-  <title>{{ _title }}</title>
-  <meta name="description" content="{{ _desc }}">
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="{{ site.title }}" />
+        <meta
+            property="og:title"
+            content="{{ page.title | default: site.title }}"
+        />
+        <meta
+            property="og:description"
+            content="{{ page.description | default: site.description }}"
+        />
+        <meta property="og:url" content="{{ page.url | absolute_url }}" />
+        {% if page.thumbnail or site.thumbnail %}
+        <meta
+            property="og:image"
+            content="{{ page.thumbnail | default: site.thumbnail }}"
+        />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta
+            property="og:image:alt"
+            content="{{ page.title | default: site.title }}"
+        />
+        {% endif %}
 
-  <meta property="og:type"         content="website">
-  <meta property="og:site_name"    content="{{ site.title }}">
-  <meta property="og:title"        content="{{ _title }}">
-  <meta property="og:description"  content="{{ _desc }}">
-  <meta property="og:url"          content="{{ page.url | absolute_url }}">
-  {% if _img %}
-  <meta property="og:image"        content="{{ _img }}">
-  <meta property="og:image:width"  content="1200">
-  <meta property="og:image:height" content="630">
-  <meta property="og:image:alt"    content="{{ _title }}">
-  {% endif %}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta
+            name="twitter:title"
+            content="{{ page.title | default: site.title }}"
+        />
+        <meta
+            name="twitter:description"
+            content="{{ page.description | default: site.description }}"
+        />
+        {% if page.thumbnail or site.thumbnail %}
+        <meta
+            name="twitter:image"
+            content="{{ page.thumbnail | default: site.thumbnail }}"
+        />
+        {% endif %}
 
-  <meta name="twitter:card"        content="summary_large_image">
-  <meta name="twitter:title"       content="{{ _title }}">
-  <meta name="twitter:description" content="{{ _desc }}">
-  {% if _img %}<meta name="twitter:image" content="{{ _img }}">{% endif %}
+        <meta
+            name="theme-color"
+            content="{{ page.color | default: site.color | default: '#f1f4f8' }}"
+        />
 
-  <meta name="theme-color" content="{{ page.color | default: site.color | default: '#f1f4f8' }}">
+        {% assign favicon = page.icon | default: site.icon %} {% if favicon %}
+        <link
+            rel="icon"
+            type="image/svg+xml"
+            href="{{ favicon | relative_url }}"
+        />
+        <link rel="apple-touch-icon" href="{{ favicon | relative_url }}" />
+        {% endif %}
 
-  {% assign favicon = page.icon | default: site.icon %}
-  {% if favicon %}
-  <link rel="icon" type="image/svg+xml" href="{{ favicon | relative_url }}">
-  <link rel="apple-touch-icon"          href="{{ favicon | relative_url }}">
-  {% endif %}
+        <style>
+                 :root,
+            [data-accent=''],
+            [data-accent='light-grey'] { --h: 0; --s: 0%; --ac-l: 65%; --ac2-l: 85%; --bg-l: 92%; --pn-l: 97%; --tx-l: 10%; --bd-a: 0.06; --sd-a: 0.08; --ht-l: 100%; --it-a: 0.04; --wl-l: 92%; --bg-d: 6%; --pn-d: 10%; --tx-d: 92%; --bd-d-a: 0.03; --sd-d-a: 0.65; --ht-d-a: 0.03; --it-d-a: 0.40; --wl-d: 8%; }
+            [data-accent='blue']       { --h: 217; --s: 91%; }
+            [data-accent='dark-grey']  { --h: 0; --s: 0%; --ac-l: 50%; --ac2-l: 65%; --bg-l: 88%; --pn-l: 94%; --tx-l: 10%; --bd-a: 0.08; --sd-a: 0.10; --ht-l: 98%; --it-a: 0.05; --wl-l: 88%; --bg-d: 5%; --pn-d: 10%; --tx-d: 88%; --bd-d-a: 0.03; --sd-d-a: 0.7; --ht-d-a: 0.03; --it-d-a: 0.45; --wl-d: 7%; }
+            [data-accent='brown']      { --h: 25; --s: 48%; }
+            [data-accent='green']      { --h: 141; --s: 48%; }
+            [data-accent='mint']       { --h: 174; --s: 52%; }
+            [data-accent='red']        { --h: 0; --s: 79%; }
 
-  <style>
-    :root[data-theme='light'] { --bg: #dce1e8; --pn: #f1f4f8; --tx: #2d3436; --bd: rgba(0,0,0,0.06); --sd: rgba(100,115,145,0.3); --ht: #ffffff; --it: rgba(0,0,0,0.07); --wl: #e8ebf2; }
-    :root[data-theme='dark']  { --bg: #0d0e12; --pn: #1a1c22; --tx: #e1e4e8; --bd: rgba(255,255,255,0.03); --sd: rgba(0,0,0,0.65); --ht: rgba(255,255,255,0.06); --it: rgba(0,0,0,0.40); --wl: #121418; }
+            :root[data-theme='light'] {
+              --ac: hsl(var(--h), var(--s), var(--ac-l, 65%));
+              --ac2: hsl(var(--h), var(--s), var(--ac2-l, 85%));
+              --bg: hsl(var(--h), calc(var(--s) * 0.08), var(--bg-l, 92%));
+              --pn: hsl(var(--h), calc(var(--s) * 0.06), var(--pn-l, 97%));
+              --tx: hsl(var(--h), calc(var(--s) * 0.04), var(--tx-l, 10%));
+              --bd: hsla(var(--h), calc(var(--s) * 0.15), 0%, var(--bd-a, 0.06));
+              --sd: hsla(var(--h), calc(var(--s) * 0.3), 0%, var(--sd-a, 0.08));
+              --ht: hsl(var(--h), calc(var(--s) * 0.02), var(--ht-l, 100%));
+              --it: hsla(var(--h), calc(var(--s) * 0.2), 0%, var(--it-a, 0.04));
+              --wl: hsl(var(--h), calc(var(--s) * 0.04), var(--wl-l, 92%));
+            }
 
-    [data-accent='blue'][data-theme='light']       { --ac: #2563eb; }
-    [data-accent='blue'][data-theme='dark']        { --ac: #3b82f6; }
-    [data-accent='light-grey'][data-theme='light'] { --ac: #8896a8; }
-    [data-accent='light-grey'][data-theme='dark']  { --ac: #a0aec0; }
-    [data-accent='dark-grey'][data-theme='light']  { --ac: #2d3748; }
-    [data-accent='dark-grey'][data-theme='dark']   { --ac: #718096; }
-    [data-accent='brown'][data-theme='light']      { --ac: #7c4a2d; }
-    [data-accent='brown'][data-theme='dark']       { --ac: #b07850; }
-    [data-accent='green'][data-theme='light']      { --ac: #1a7a3c; }
-    [data-accent='green'][data-theme='dark']       { --ac: #38a169; }
-    [data-accent='mint'][data-theme='light']       { --ac: #2a9d8f; }
-    [data-accent='mint'][data-theme='dark']        { --ac: #4fd1c5; }
-    [data-accent='red'][data-theme='light']        { --ac: #c0392b; }
-    [data-accent='red'][data-theme='dark']         { --ac: #fc8181; }
+            :root[data-theme='dark'] {
+              --ac: hsl(var(--h), calc(var(--s) * 0.8), var(--ac-l, 65%));
+              --ac2: hsl(var(--h), calc(var(--s) * 0.6), var(--ac2-l, 85%));
+              --bg: hsl(var(--h), calc(var(--s) * 0.3), var(--bg-d, 6%));
+              --pn: hsl(var(--h), calc(var(--s) * 0.3), var(--pn-d, 10%));
+              --tx: hsl(var(--h), calc(var(--s) * 0.04), var(--tx-d, 92%));
+              --bd: hsla(var(--h), calc(var(--s) * 0.5), 100%, var(--bd-d-a, 0.03));
+              --sd: hsla(0, 0%, 0%, var(--sd-d-a, 0.65));
+              --ht: hsla(var(--h), calc(var(--s) * 0.4), 100%, var(--ht-d-a, 0.03));
+              --it: hsla(0, 0%, 0%, var(--it-d-a, 0.40));
+              --wl: hsl(var(--h), calc(var(--s) * 0.25), var(--wl-d, 8%));
+            }
+              * { box-sizing: border-box; transition: background .3s, color .3s, transform .2s, opacity .3s, height .3s, padding .3s, box-shadow .3s; }
+              body { margin: 0; font-family: -apple-system, system-ui, sans-serif; background: var(--bg); color: var(--tx); font-size: 13px; line-height: 1.5; min-height: 100vh; display: flex; justify-content: center; }
 
-    * { box-sizing: border-box; transition: background .3s, color .3s, transform .2s, opacity .3s, height .3s, padding .3s, box-shadow .3s; }
-    body { margin: 0; font-family: -apple-system, system-ui, sans-serif; background: var(--bg); color: var(--tx); font-size: 13px; line-height: 1.5; min-height: 100vh; display: flex; justify-content: center; }
+              .bg-custom { position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; }
 
-    .bg-custom { position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; }
+              .pnl {
+                width: 97%; max-width: 1440px; margin: 2rem 0; background: var(--pn);
+                border-radius: 32px; border: 1px solid var(--bd); padding: 1.5rem;
+                box-shadow: 20px 20px 60px var(--sd), inset -8px -8px 16px var(--it), inset 8px 8px 16px var(--ht);
+                display: flex; flex-direction: column; min-height: 94vh; position: relative;
+              }
 
-    .pnl {
-      width: 97%; max-width: 1440px; margin: 2rem 0; background: var(--pn);
-      border-radius: 32px; border: 1px solid var(--bd); padding: 1.5rem;
-      box-shadow: 20px 20px 60px var(--sd), inset -8px -8px 16px var(--it), inset 8px 8px 16px var(--ht);
-      display: flex; flex-direction: column; min-height: 94vh; position: relative;
-    }
+              .hdr {
+                width: 100%; z-index: 1000; background: var(--pn) url('{{ site.header.bg }}') center/cover;
+                border-radius: 20px; border: 1px solid var(--bd); margin-bottom: 2rem;
+                box-shadow: inset -8px -8px 20px var(--it), inset 8px 8px 20px var(--ht), 0 8px 32px var(--sd);
+                position: relative; overflow: hidden; flex-shrink: 0;
+                user-select: none; -webkit-user-select: none;
+              }
+              .hdr-ov { background: var(--pn); opacity: 0.85; backdrop-filter: blur(14px); }
 
-    .hdr {
-      width: 100%; z-index: 1000; background: var(--pn) url('{{ site.header.bg }}') center/cover;
-      border-radius: 20px; border: 1px solid var(--bd); margin-bottom: 2rem;
-      box-shadow: inset -8px -8px 20px var(--it), inset 8px 8px 20px var(--ht), 0 8px 32px var(--sd);
-      position: relative; overflow: hidden; flex-shrink: 0;
-      user-select: none; -webkit-user-select: none;
-    }
-    .hdr-ov { background: rgba(var(--pn), 0.85); backdrop-filter: blur(14px); }
+              .sticky { position: sticky; top: 1rem; box-shadow: 0 15px 40px var(--sd), inset -8px -8px 20px var(--it), inset 8px 8px 20px var(--ht); }
 
-    .sticky { position: sticky; top: 1rem; box-shadow: 0 15px 40px var(--sd), inset -8px -8px 20px var(--it), inset 8px 8px 20px var(--ht); }
+              .h-top { display: flex; align-items: center; justify-content: space-between; padding: 0.6rem 1.4rem; min-height: 56px; }
+              .h-btm { display: flex; gap: 4px; padding: 0 1.4rem 0.8rem; flex-wrap: wrap; overflow: hidden; height: auto; opacity: 1; }
 
-    .h-top { display: flex; align-items: center; justify-content: space-between; padding: 0.6rem 1.4rem; min-height: 56px; }
-    .h-btm { display: flex; gap: 4px; padding: 0 1.4rem 0.8rem; flex-wrap: wrap; overflow: hidden; height: auto; opacity: 1; }
+              .sticky:not(:hover) .h-btm, .sticky:not(:hover) .rel-path { height: 0; padding: 0; opacity: 0; pointer-events: none; }
 
-    .sticky:not(:hover) .h-btm, .sticky:not(:hover) .rel-path { height: 0; padding: 0; opacity: 0; pointer-events: none; }
+              .h-logo { height: 44px; padding: 0 12px; display: flex; align-items: center; text-decoration: none; flex-shrink: 0; }
+              .f-logo { display: flex; align-items: center; flex-shrink: 0; height: {{ site.footer.logo.height | default: '36px' }}; width: {{ site.footer.logo.width | default: 'auto' }}; }
+              img { border: none !important; outline: none !important; max-height: 100%; width: auto; }
 
-    .h-logo { height: 44px; padding: 0 12px; display: flex; align-items: center; text-decoration: none; flex-shrink: 0; }
-    .f-logo { display: flex; align-items: center; flex-shrink: 0; height: {{ site.footer.logo.height | default: '36px' }}; width: {{ site.footer.logo.width | default: 'auto' }}; }
-    img { border: none !important; outline: none !important; max-height: 100%; width: auto; }
+              .rel-path { font-weight: 700; opacity: 0.4; margin-right: auto; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: center; }
+              .rel-path a { text-decoration: none; color: inherit; }
+              .rel-path a:hover { text-decoration: underline; opacity: 1; }
+              .sep { opacity: 0.2; font-weight: 300; padding: 0 4px; }
 
-    .rel-path { font-weight: 700; opacity: 0.4; margin-right: auto; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: center; }
-    .rel-path a { text-decoration: none; color: inherit; }
-    .rel-path a:hover { text-decoration: underline; opacity: 1; }
-    .sep { opacity: 0.2; font-weight: 300; padding: 0 4px; }
+              .a-lnk { padding: 8px 12px; text-decoration: none; color: inherit; font-weight: 600; display: flex; align-items: center; position: relative; }
+              .a-lnk span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-    .a-lnk { padding: 8px 12px; text-decoration: none; color: inherit; font-weight: 600; display: flex; align-items: center; position: relative; }
-    .a-lnk span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+              .a-lnk::after { content: ''; position: absolute; bottom: 2px; left: 50%; width: 0; height: 2px; background: var(--ac); transition: width 0.3s, left 0.3s; }
+              .a-lnk:hover::after { width: 80%; left: 10%; }
 
-    .a-lnk::after { content: ''; position: absolute; bottom: 2px; left: 50%; width: 0; height: 2px; background: var(--ac); transition: width 0.3s, left 0.3s; }
-    .a-lnk:hover::after { width: 80%; left: 10%; }
+              .a-lnk img { width: 0; height: 16px; opacity: 0; filter: brightness(0) invert(1); transition: all 0.25s; }
+              .a-lnk:hover img { width: 16px; opacity: 1; margin-right: 8px; transform: scale(1.3) rotate(-14deg); filter: none; }
 
-    .a-lnk img { width: 0; height: 16px; opacity: 0; filter: brightness(0) invert(1); transition: all 0.25s; }
-    .a-lnk:hover img { width: 16px; opacity: 1; margin-right: 8px; transform: scale(1.3) rotate(-14deg); filter: none; }
+              .util { display: flex; gap: 8px; flex-shrink: 0; }
+              .c-btn { width: 34px; height: 34px; border-radius: 50%; border: none; cursor: pointer; background: var(--wl); color: var(--tx); display: flex; align-items: center; justify-content: center; box-shadow: 4px 4px 8px var(--sd), inset -2px -2px 4px var(--it), inset 2px 2px 4px var(--ht); }
+              .c-btn:active { transform: scale(0.9); }
+              .active { color: var(--pn) !important; background: var(--ac) !important; box-shadow: inset -2px -2px 4px rgba(0,0,0,0.2) !important; }
 
-    .util { display: flex; gap: 8px; flex-shrink: 0; }
-    .c-btn { width: 34px; height: 34px; border-radius: 50%; border: none; cursor: pointer; background: var(--wl); color: var(--tx); display: flex; align-items: center; justify-content: center; box-shadow: 4px 4px 8px var(--sd), inset -2px -2px 4px var(--it), inset 2px 2px 4px var(--ht); }
-    .c-btn:active { transform: scale(0.9); }
-    .active { color: #ffffff !important; background: var(--ac) !important; box-shadow: inset -2px -2px 4px rgba(0,0,0,0.2) !important; }
+              main { flex: 1; padding: 1rem; background: transparent; color: inherit; }
 
-    main { flex: 1; padding: 1rem; background: transparent; color: inherit; }
+              .ftr { margin-top: auto; padding: 2rem 1rem 1rem; }
+              .hr { height: 1px; background: var(--bd); margin-bottom: 2rem; box-shadow: 0 1px 0 var(--ht); }
+              .ftr-c { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
 
-    .ftr { margin-top: auto; padding: 2rem 1rem 1rem; }
-    .hr { height: 1px; background: var(--bd); margin-bottom: 2rem; box-shadow: 0 1px 0 var(--ht); }
-    .ftr-c { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
+              .code-wrap { position: relative; }
+              .code-copy {
+                position: absolute; top: 0.5rem; right: 0.5rem;
+                width: 28px; height: 28px; border-radius: 6px; border: 1px solid var(--bd);
+                background: var(--wl); color: var(--tx); cursor: pointer;
+                display: flex; align-items: center; justify-content: center;
+                opacity: 0; transition: opacity .2s, transform .15s, box-shadow .15s;
+                box-shadow: 2px 2px 6px var(--sd), inset -1px -1px 3px var(--it), inset 1px 1px 3px var(--ht);
+                z-index: 1;
+              }
+              .code-wrap:hover .code-copy { opacity: 1; }
+              .code-copy:active { transform: scale(0.9); box-shadow: inset 2px 2px 4px var(--it); }
+              .code-copy.did-copy { color: var(--ac); }
+              .code-copy svg { width: 14px; height: 14px; pointer-events: none; display: block; }
 
-    .code-wrap { position: relative; }
-    .code-copy {
-      position: absolute; top: 0.5rem; right: 0.5rem;
-      width: 28px; height: 28px; border-radius: 6px; border: 1px solid var(--bd);
-      background: var(--wl); color: var(--tx); cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      opacity: 0; transition: opacity .2s, transform .15s, box-shadow .15s;
-      box-shadow: 2px 2px 6px var(--sd), inset -1px -1px 3px var(--it), inset 1px 1px 3px var(--ht);
-      z-index: 1;
-    }
-    .code-wrap:hover .code-copy { opacity: 1; }
-    .code-copy:active { transform: scale(0.9); box-shadow: inset 2px 2px 4px var(--it); }
-    .code-copy.did-copy { color: var(--ac); }
-    .code-copy svg { width: 14px; height: 14px; pointer-events: none; display: block; }
+              pre, code { background: var(--wl); border: 1px solid var(--bd); border-radius: 6px; font-size: 0.82rem; box-shadow: inset 2px 2px 5px var(--it), inset -2px -2px 5px var(--ht); }
+              pre { padding: 0.4rem 0.6rem; margin: 0.2rem 0; overflow-x: auto; }
+              code { padding: 0.1em 0.3em; }
+              pre code { all: unset; }
 
-    pre, code { background: var(--wl); border: 1px solid var(--bd); border-radius: 6px; font-size: 0.82rem; box-shadow: inset 2px 2px 5px var(--it), inset -2px -2px 5px var(--ht); }
-    pre { padding: 0.4rem 0.6rem; margin: 0.2rem 0; overflow-x: auto; }
-    code { padding: 0.1em 0.3em; }
-    pre code { all: unset; }
+              table { width: 100%; border-collapse: separate; border-spacing: 0; margin: 0.75rem 0; border-radius: 10px; border: 1px solid var(--bd); overflow: hidden; box-shadow: 4px 4px 12px var(--sd), inset -2px -2px 6px var(--it), inset 2px 2px 6px var(--ht); }
+              thead { background: var(--wl); box-shadow: inset -2px -2px 4px var(--it), inset 2px 2px 4px var(--ht); }
+              th { padding: 0.5rem 0.8rem; text-align: left; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--tx); border-bottom: 1px solid var(--bd); }
+              td { padding: 0.5rem 0.8rem; font-size: 0.82rem; border-bottom: 1px solid var(--bd); }
+              tbody tr:last-child td { border-bottom: none; }
+              tbody tr:hover { background: var(--wl); }
 
-    table { width: 100%; border-collapse: separate; border-spacing: 0; margin: 0.75rem 0; border-radius: 10px; border: 1px solid var(--bd); overflow: hidden; box-shadow: 4px 4px 12px var(--sd), inset -2px -2px 6px var(--it), inset 2px 2px 6px var(--ht); }
-    thead { background: var(--wl); box-shadow: inset -2px -2px 4px var(--it), inset 2px 2px 4px var(--ht); }
-    th { padding: 0.5rem 0.8rem; text-align: left; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--tx); border-bottom: 1px solid var(--bd); }
-    td { padding: 0.5rem 0.8rem; font-size: 0.82rem; border-bottom: 1px solid var(--bd); }
-    tbody tr:last-child td { border-bottom: none; }
-    tbody tr:hover { background: var(--wl); }
+              @media (max-width: 786px) {
+                .rel-path { display: none; }
+                .a-lnk span { max-width: 80px; }
+                .h-btm { padding: 0 0.5rem 0.5rem; }
+                .code-copy { opacity: 1; }
+              }
 
-    @media (max-width: 786px) {
-      .rel-path { display: none; }
-      .a-lnk span { max-width: 80px; }
-      .h-btm { padding: 0 0.5rem 0.5rem; }
-      .code-copy { opacity: 1; }
-    }
+              [data-theme='light'] .d-only, [data-theme='dark'] .l-only { display: none; }
 
-    [data-theme='light'] .d-only, [data-theme='dark'] .l-only { display: none; }
-  </style>
+              .highlight pre { margin: 0; padding: 1rem 1.2rem; overflow-x: auto; border-radius: 12px; font-size: 0.82rem; line-height: 1.6; font-family: ui-monospace, "Cascadia Code", "Fira Code", "Consolas", monospace; background: var(--wl); color: var(--tx); }
+              .highlight .hll { display: block; }
+              .highlight .c,
+              .highlight .c1,
+              .highlight .cm,
+              .highlight .cs,
+              .highlight .cp  { color: var(--tx); opacity: 0.5; font-style: italic; }
+              .highlight .k,
+              .highlight .kd,
+              .highlight .kn,
+              .highlight .kp,
+              .highlight .kr,
+              .highlight .kt  { color: var(--ac); font-weight: 600; }
+              .highlight .s,
+              .highlight .s1,
+              .highlight .s2,
+              .highlight .sb,
+              .highlight .sc,
+              .highlight .sd,
+              .highlight .se,
+              .highlight .sh,
+              .highlight .si,
+              .highlight .sx,
+              .highlight .sr,
+              .highlight .ss  { color: var(--ac2); }
+              .highlight .m,
+              .highlight .mb,
+              .highlight .mf,
+              .highlight .mh,
+              .highlight .mi,
+              .highlight .mo,
+              .highlight .il  { color: var(--ac); opacity: 0.8; }
+              .highlight .na,
+              .highlight .nb,
+              .highlight .nc,
+              .highlight .nd,
+              .highlight .ni,
+              .highlight .ne,
+              .highlight .nf,
+              .highlight .nl,
+              .highlight .nn,
+              .highlight .nt,
+              .highlight .nv,
+              .highlight .bp,
+              .highlight .vc,
+              .highlight .vg,
+              .highlight .vi  { color: var(--ac2); opacity: 0.7; }
+              .highlight .o,
+              .highlight .ow  { color: var(--ac); }
+              .highlight .p   { color: var(--tx); opacity: 0.7; }
+              .highlight .gh,
+              .highlight .gu  { color: var(--ac); font-weight: 700; }
+              .highlight .gi  { color: var(--ac); background: var(--ht); }
+              .highlight .gd  { color: var(--ac2); background: var(--it); }
+        </style>
 
-  <style>
-    .highlight pre { margin: 0; padding: 1rem 1.2rem; overflow-x: auto; border-radius: 12px; font-size: 0.82rem; line-height: 1.6; font-family: ui-monospace, "Cascadia Code", "Fira Code", "Consolas", monospace; }
-    .highlight .hll { display: block; }
+        {{ page.head_extra }}
+    </head>
+    <body>
+        <div class="bg-custom">{{ site.background-html }}</div>
 
-    :root[data-theme='light'] .highlight pre { background: #f6f8fa; color: #24292e; }
-    :root[data-theme='light'] .highlight .c,
-    :root[data-theme='light'] .highlight .c1,
-    :root[data-theme='light'] .highlight .cm,
-    :root[data-theme='light'] .highlight .cs,
-    :root[data-theme='light'] .highlight .cp  { color: #6a737d; font-style: italic; }
-    :root[data-theme='light'] .highlight .k,
-    :root[data-theme='light'] .highlight .kd,
-    :root[data-theme='light'] .highlight .kn,
-    :root[data-theme='light'] .highlight .kp,
-    :root[data-theme='light'] .highlight .kr,
-    :root[data-theme='light'] .highlight .kt  { color: #d73a49; font-weight: 600; }
-    :root[data-theme='light'] .highlight .s,
-    :root[data-theme='light'] .highlight .s1,
-    :root[data-theme='light'] .highlight .s2,
-    :root[data-theme='light'] .highlight .sb,
-    :root[data-theme='light'] .highlight .sc,
-    :root[data-theme='light'] .highlight .sd,
-    :root[data-theme='light'] .highlight .se,
-    :root[data-theme='light'] .highlight .sh,
-    :root[data-theme='light'] .highlight .si,
-    :root[data-theme='light'] .highlight .sx,
-    :root[data-theme='light'] .highlight .sr,
-    :root[data-theme='light'] .highlight .ss  { color: #032f62; }
-    :root[data-theme='light'] .highlight .m,
-    :root[data-theme='light'] .highlight .mb,
-    :root[data-theme='light'] .highlight .mf,
-    :root[data-theme='light'] .highlight .mh,
-    :root[data-theme='light'] .highlight .mi,
-    :root[data-theme='light'] .highlight .mo,
-    :root[data-theme='light'] .highlight .il  { color: #005cc5; }
-    :root[data-theme='light'] .highlight .na,
-    :root[data-theme='light'] .highlight .nb,
-    :root[data-theme='light'] .highlight .nc,
-    :root[data-theme='light'] .highlight .nd,
-    :root[data-theme='light'] .highlight .ni,
-    :root[data-theme='light'] .highlight .ne,
-    :root[data-theme='light'] .highlight .nf,
-    :root[data-theme='light'] .highlight .nl,
-    :root[data-theme='light'] .highlight .nn,
-    :root[data-theme='light'] .highlight .nt,
-    :root[data-theme='light'] .highlight .nv,
-    :root[data-theme='light'] .highlight .bp,
-    :root[data-theme='light'] .highlight .vc,
-    :root[data-theme='light'] .highlight .vg,
-    :root[data-theme='light'] .highlight .vi  { color: #6f42c1; }
-    :root[data-theme='light'] .highlight .o,
-    :root[data-theme='light'] .highlight .ow  { color: #d73a49; }
-    :root[data-theme='light'] .highlight .p   { color: #24292e; }
-    :root[data-theme='light'] .highlight .gh,
-    :root[data-theme='light'] .highlight .gu  { color: #005cc5; font-weight: 700; }
-    :root[data-theme='light'] .highlight .gi  { color: #22863a; background: #f0fff4; }
-    :root[data-theme='light'] .highlight .gd  { color: #b31d28; background: #ffeef0; }
+        <div class="pnl">
+            <header class="hdr" id="h">
+                <div class="hdr-ov">
+                    <div class="h-top">
+                        <a href="{{ '/' | relative_url }}" class="h-logo">
+                            {% assign headericon = page.headericon | default:
+                            site.header.logo %} {% if headericon %}<img
+                                src="{{ headericon | relative_url }}"
+                                alt=""
+                            />{% endif %}
+                        </a>
 
-    :root[data-theme='dark'] .highlight pre  { background: #0d1117; color: #c9d1d9; }
-    :root[data-theme='dark'] .highlight .c,
-    :root[data-theme='dark'] .highlight .c1,
-    :root[data-theme='dark'] .highlight .cm,
-    :root[data-theme='dark'] .highlight .cs,
-    :root[data-theme='dark'] .highlight .cp  { color: #8b949e; font-style: italic; }
-    :root[data-theme='dark'] .highlight .k,
-    :root[data-theme='dark'] .highlight .kd,
-    :root[data-theme='dark'] .highlight .kn,
-    :root[data-theme='dark'] .highlight .kp,
-    :root[data-theme='dark'] .highlight .kr,
-    :root[data-theme='dark'] .highlight .kt  { color: #ff7b72; font-weight: 600; }
-    :root[data-theme='dark'] .highlight .s,
-    :root[data-theme='dark'] .highlight .s1,
-    :root[data-theme='dark'] .highlight .s2,
-    :root[data-theme='dark'] .highlight .sb,
-    :root[data-theme='dark'] .highlight .sc,
-    :root[data-theme='dark'] .highlight .sd,
-    :root[data-theme='dark'] .highlight .se,
-    :root[data-theme='dark'] .highlight .sh,
-    :root[data-theme='dark'] .highlight .si,
-    :root[data-theme='dark'] .highlight .sx,
-    :root[data-theme='dark'] .highlight .sr,
-    :root[data-theme='dark'] .highlight .ss  { color: #a5d6ff; }
-    :root[data-theme='dark'] .highlight .m,
-    :root[data-theme='dark'] .highlight .mb,
-    :root[data-theme='dark'] .highlight .mf,
-    :root[data-theme='dark'] .highlight .mh,
-    :root[data-theme='dark'] .highlight .mi,
-    :root[data-theme='dark'] .highlight .mo,
-    :root[data-theme='dark'] .highlight .il  { color: #79c0ff; }
-    :root[data-theme='dark'] .highlight .na,
-    :root[data-theme='dark'] .highlight .nb,
-    :root[data-theme='dark'] .highlight .nc,
-    :root[data-theme='dark'] .highlight .nd,
-    :root[data-theme='dark'] .highlight .ni,
-    :root[data-theme='dark'] .highlight .ne,
-    :root[data-theme='dark'] .highlight .nf,
-    :root[data-theme='dark'] .highlight .nl,
-    :root[data-theme='dark'] .highlight .nn,
-    :root[data-theme='dark'] .highlight .nt,
-    :root[data-theme='dark'] .highlight .nv,
-    :root[data-theme='dark'] .highlight .bp,
-    :root[data-theme='dark'] .highlight .vc,
-    :root[data-theme='dark'] .highlight .vg,
-    :root[data-theme='dark'] .highlight .vi  { color: #d2a8ff; }
-    :root[data-theme='dark'] .highlight .o,
-    :root[data-theme='dark'] .highlight .ow  { color: #ff7b72; }
-    :root[data-theme='dark'] .highlight .p   { color: #c9d1d9; }
-    :root[data-theme='dark'] .highlight .gh,
-    :root[data-theme='dark'] .highlight .gu  { color: #79c0ff; font-weight: 700; }
-    :root[data-theme='dark'] .highlight .gi  { color: #aff5b4; background: #033a16; }
-    :root[data-theme='dark'] .highlight .gd  { color: #ffdcd7; background: #67060c; }
-  </style>
+                        <div class="rel-path">
+                            {% assign url_parts = page.url | split: '/' %} {%
+                            assign cumulative = '' %} {% for part in url_parts
+                            %} {% if part == '' %}{% continue %}{% endif %} {%
+                            assign cumulative = cumulative | append: '/' |
+                            append: part %} {% assign is_last = forloop.last %}
+                            {% assign is_index = false %} {% if part ==
+                            'index.html' or part == 'index.htm' %}{% assign
+                            is_index = true %}{% endif %}
+                            <span class="sep">/</span>
+                            {% if is_last %} {% unless is_index %}<b
+                                >{{ part }}</b
+                            >{% endunless %} {% else %}
+                            <a href="{{ cumulative | relative_url }}"
+                                >{{ part }}</a
+                            >
+                            {% endif %} {% endfor %}
+                        </div>
 
-  {{ page.head_extra }}
-</head>
-<body>
-  <div class="bg-custom">{{ site.background-html }}</div>
+                        <div class="util">
+                            {% assign btn_th = site.header.buttons.appearance %}
+                            {% unless btn_th.show == false %}
+                            <button class="c-btn" id="tB" title="Theme">
+                                <svg
+                                    class="l-only"
+                                    viewBox="0 0 24 24"
+                                    width="16"
+                                >
+                                    <path
+                                        fill="currentColor"
+                                        d="M12,18c-3.3,0-6-2.7-6-6s2.7-6,6-6s6,2.7,6,6S15.3,18,12,18zM11,1h2v3h-2V1z M11,20h2v3h-2V20z M3.5,4.9l1.4-1.4l2.1,2.1L5.6,7.1L3.5,4.9z M16.9,18.3l1.4-1.4l2.1,2.1l-1.4,1.4L16.9,18.3z M1,11h3v2H1V11z M20,11h3v2h-3V11z M4.9,20.5l-1.4-1.4l2.1-2.1l1.4,1.4L4.9,20.5z M18.3,7.1l-1.4-1.4l2.1-2.1l1.4,1.4L18.3,7.1z"
+                                    />
+                                </svg>
+                                <svg
+                                    class="d-only"
+                                    viewBox="0 0 24 24"
+                                    width="16"
+                                >
+                                    <path
+                                        fill="currentColor"
+                                        d="M12,3c-4.97,0-9,4.03-9,9s4.03,9,9,9s9-4.03,9-9c0-0.46-0.04-0.92-0.1-1.36c-0.98,1.37-2.58,2.26-4.4,2.26 c-2.98,0-5.4-2.42-5.4-5.4c0-1.81,0.89-3.42,2.26-4.4C12.92,3.04,12.46,3,12,3z"
+                                    />
+                                </svg>
+                            </button>
+                            {% endunless %} {% assign btn_pin =
+                            site.header.buttons.pin-header %} {% unless
+                            btn_pin.show == false %}
+                            <button class="c-btn" id="pB" title="Pin">
+                                <svg viewBox="0 0 24 24" width="16">
+                                    <path
+                                        fill="currentColor"
+                                        d="M16,12V4H17V2H7V4H8V12L6,14V16H11.2V22H12.8V16H18V14L16,12Z"
+                                    />
+                                </svg>
+                            </button>
+                            {% endunless %}
+                        </div>
+                    </div>
 
-  <div class="pnl">
-    <header class="hdr" id="h">
-      <div class="hdr-ov">
-        <div class="h-top">
+                    <nav class="h-btm">
+                        {% assign h_links = site.header.a | sort: 'order' %} {%
+                        for link in h_links %}
+                        <a href="{{ link.url | relative_url }}" class="a-lnk">
+                            {% if link.icon %}<img
+                                src="{{ link.icon | relative_url }}"
+                            />{% endif %}
+                            <span>{{ link.text }}</span>
+                        </a>
+                        {% endfor %}
+                    </nav>
+                </div>
+            </header>
 
-          <a href="{{ '/' | relative_url }}" class="h-logo">
-            {% if site.header.logo %}<img src="{{ site.header.logo | relative_url }}" alt="">{% endif %}
-          </a>
+            <main>{{ content }}</main>
 
-          <div class="rel-path">
-            {% assign url_parts = page.url | split: '/' %}
-            {% assign cumulative = '' %}
-            {% for part in url_parts %}
-              {% if part == '' %}{% continue %}{% endif %}
-              {% assign cumulative = cumulative | append: '/' | append: part %}
-              {% assign is_last = forloop.last %}
-              {% assign is_index = false %}
-              {% if part == 'index.html' or part == 'index.htm' %}{% assign is_index = true %}{% endif %}
-              <span class="sep">/</span>
-              {% if is_last %}
-                {% unless is_index %}<b>{{ part }}</b>{% endunless %}
-              {% else %}
-                <a href="{{ cumulative | relative_url }}">{{ part }}</a>
-              {% endif %}
-            {% endfor %}
-          </div>
-
-          <div class="util">
-            {% assign _btn_th = site.header.buttons.appearance %}
-            {% unless _btn_th.show == false %}
-            <button class="c-btn" id="tB" title="Theme">
-              <svg class="l-only" viewBox="0 0 24 24" width="16"><path fill="currentColor" d="M12,18c-3.3,0-6-2.7-6-6s2.7-6,6-6s6,2.7,6,6S15.3,18,12,18zM11,1h2v3h-2V1z M11,20h2v3h-2V20z M3.5,4.9l1.4-1.4l2.1,2.1L5.6,7.1L3.5,4.9z M16.9,18.3l1.4-1.4l2.1,2.1l-1.4,1.4L16.9,18.3z M1,11h3v2H1V11z M20,11h3v2h-3V11z M4.9,20.5l-1.4-1.4l2.1-2.1l1.4,1.4L4.9,20.5z M18.3,7.1l-1.4-1.4l2.1-2.1l1.4,1.4L18.3,7.1z"/></svg>
-              <svg class="d-only" viewBox="0 0 24 24" width="16"><path fill="currentColor" d="M12,3c-4.97,0-9,4.03-9,9s4.03,9,9,9s9-4.03,9-9c0-0.46-0.04-0.92-0.1-1.36c-0.98,1.37-2.58,2.26-4.4,2.26 c-2.98,0-5.4-2.42-5.4-5.4c0-1.81,0.89-3.42,2.26-4.4C12.92,3.04,12.46,3,12,3z"/></svg>
-            </button>
-            {% endunless %}
-            {% assign _btn_pin = site.header.buttons.pin-header %}
-            {% unless _btn_pin.show == false %}
-            <button class="c-btn" id="pB" title="Pin"><svg viewBox="0 0 24 24" width="16"><path fill="currentColor" d="M16,12V4H17V2H7V4H8V12L6,14V16H11.2V22H12.8V16H18V14L16,12Z"/></svg></button>
-            {% endunless %}
-          </div>
+            <footer class="ftr">
+                <div class="hr"></div>
+                <div class="ft-c">
+                    <div class="f-logo">
+                        {% if site.footer.logo.link %}<img
+                            src="{{ site.footer.logo.link | relative_url }}"
+                            alt=""
+                        />{% endif %}
+                    </div>
+                    <nav class="util" style="margin: 0; opacity: 0.6">
+                        {% assign f_links = site.footer.a | sort: 'order' %} {%
+                        for link in f_links %}
+                        <a href="{{ link.url | relative_url }}" class="a-lnk"
+                            ><span>{{ link.text }}</span></a
+                        >
+                        {% endfor %}
+                    </nav>
+                </div>
+            </footer>
+            <div align="center" style="opacity: 0.4; font-weight: 600">
+                {{ site.footer.notice-text }}
+            </div>
         </div>
 
-        <nav class="h-btm">
-          {% assign h_links = site.header.a | sort: 'order' %}
-          {% for link in h_links %}
-            <a href="{{ link.url | relative_url }}" class="a-lnk">
-              {% if link.icon %}<img src="{{ link.icon | relative_url }}">{% endif %}
-              <span>{{ link.text }}</span>
-            </a>
-          {% endfor %}
-        </nav>
-      </div>
-    </header>
+        <script>
+            const r = document.documentElement, h = document.getElementById('h');
 
-    <main>{{ content }}</main>
+            r.setAttribute('data-theme', 'dark');
 
-    <footer class="ftr">
-      <div class="hr"></div>
-      <div class="ft-c">
-        <div class="f-logo">
-          {% if site.footer.logo.link %}<img src="{{ site.footer.logo.link | relative_url }}" alt="">{% endif %}
-        </div>
-        <nav class="util" style="margin:0; opacity:0.6">
-          {% assign f_links = site.footer.a | sort: 'order' %}
-          {% for link in f_links %}
-            <a href="{{ link.url | relative_url }}" class="a-lnk"><span>{{ link.text }}</span></a>
-          {% endfor %}
-        </nav>
-      </div>
-    </footer>
-    <div align="center" style="opacity:0.4; font-weight:600">{{ site.footer.notice-text }}</div>
-  </div>
+            let consent = false;
+            const trySave = (key, val) => {
+              if (consent || (consent = confirm("this site wants to save this preference in your device are you okay with it? this is also referred as \"cookie\"."))) {
+                localStorage.setItem(key, val);
+              }
+            };
 
-  <script>
-    const r = document.documentElement, h = document.getElementById('h');
+            {% assign btn_th = site.header.buttons.appearance %}
+            {% unless btn_th.show == false %}
+            (function () {
+              const tB = document.getElementById('tB');
+              const prePressed = '{{ btn_th.pre-pressed | default: 'auto' }}';
+              const apply = v => r.setAttribute('data-theme', v);
+              const saved = localStorage.getItem('th');
+              if (prePressed === 'dark') {
+                apply('dark');
+              } else if (prePressed === 'light') {
+                apply('light');
+              } else if (saved) {
+                apply(saved);
+              } else if (window.matchMedia('(prefers-color-scheme: light)').matches) {
+                apply('light');
+              }
+              tB.onclick = () => {
+                const v = r.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+                apply(v);
+                trySave('th', v);
+              };
+            })();
+            {% endunless %}
 
-    let consent = false;
-    const trySave = (key, val) => {
-      if (consent || (consent = confirm("this site wants to save this preference in your device are you okay with it? this is also referred as \"cookie\"."))) {
-        localStorage.setItem(key, val);
-      }
-    };
+            {% assign btn_pin = site.header.buttons.pin-header %}
+            {% unless btn_pin.show == false %}
+            (function () {
+              const pB = document.getElementById('pB');
+              const prePressed = '{{ btn_pin.pre-pressed | default: 'auto' }}';
+              const apply = v => { h.classList.toggle('sticky', v); pB.classList.toggle('active', v); };
+              const saved = localStorage.getItem('pi');
+              if (prePressed === 'yes') {
+                apply(true);
+              } else if (prePressed === 'no') {
+                apply(false);
+              } else if (saved !== null) {
+                apply(saved === 'true');
+              }
+              pB.onclick = () => {
+                const s = !h.classList.contains('sticky');
+                apply(s);
+                trySave('pi', s);
+              };
+            })();
+            {% endunless %}
 
-    {% assign _btn_th = site.header.buttons.appearance %}
-    {% unless _btn_th.show == false %}
-    (function () {
-      const tB = document.getElementById('tB');
-      const prePressed = '{{ _btn_th.pre-pressed }}';
-      const apply = v => r.setAttribute('data-theme', v);
-      const saved = localStorage.getItem('th');
-      if (prePressed === 'auto') {
-        if (saved) apply(saved);
-        else if (window.matchMedia('(prefers-color-scheme: dark)').matches) apply('dark');
-      } else {
-        apply(prePressed === 'dark' ? 'dark' : 'light');
-      }
-      tB.onclick = () => {
-        const v = r.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-        apply(v);
-        trySave('th', v);
-      };
-    })();
-    {% endunless %}
+            const COPY  = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+            const CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>';
 
-    {% assign _btn_pin = site.header.buttons.pin-header %}
-    {% unless _btn_pin.show == false %}
-    (function () {
-      const pB = document.getElementById('pB');
-      const prePressed = '{{ _btn_pin.pre-pressed }}';
-      const apply = v => { h.classList.toggle('sticky', v); pB.classList.toggle('active', v); };
-      const saved = localStorage.getItem('pi');
-      if (prePressed === 'auto') {
-        apply(saved === 'true');
-      } else {
-        apply(prePressed === 'yes');
-      }
-      pB.onclick = () => {
-        const s = !h.classList.contains('sticky');
-        apply(s);
-        trySave('pi', s);
-      };
-    })();
-    {% endunless %}
-
-    const COPY  = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
-    const CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>';
-
-    document.querySelectorAll('pre code').forEach(c => {
-      const pre = c.parentElement;
-      if (pre.parentElement.classList.contains('code-wrap')) return;
-      const wrap = document.createElement('div');
-      wrap.className = 'code-wrap';
-      pre.parentNode.insertBefore(wrap, pre);
-      wrap.appendChild(pre);
-      const btn = document.createElement('button');
-      btn.className = 'code-copy';
-      btn.setAttribute('aria-label', 'copy code');
-      btn.innerHTML = COPY;
-      btn.onclick = () => {
-        if (!navigator.clipboard) return;
-        navigator.clipboard.writeText(c.textContent).then(() => {
-          btn.innerHTML = CHECK;
-          btn.classList.add('did-copy');
-          setTimeout(() => { btn.innerHTML = COPY; btn.classList.remove('did-copy'); }, 2000);
-        }).catch(() => {});
-      };
-      wrap.appendChild(btn);
-    });
-  </script>
-  {{ page.foot_extra }}
-</body>
+            document.querySelectorAll('pre code').forEach(c => {
+              const pre = c.parentElement;
+              if (pre.parentElement.classList.contains('code-wrap')) return;
+              const wrap = document.createElement('div');
+              wrap.className = 'code-wrap';
+              pre.parentNode.insertBefore(wrap, pre);
+              wrap.appendChild(pre);
+              const btn = document.createElement('button');
+              btn.className = 'code-copy';
+              btn.setAttribute('aria-label', 'copy code');
+              btn.innerHTML = COPY;
+              btn.onclick = () => {
+                if (!navigator.clipboard) return;
+                navigator.clipboard.writeText(c.textContent).then(() => {
+                  btn.innerHTML = CHECK;
+                  btn.classList.add('did-copy');
+                  setTimeout(() => { btn.innerHTML = COPY; btn.classList.remove('did-copy'); }, 2000);
+                }).catch(() => {});
+              };
+              wrap.appendChild(btn);
+            });
+        </script>
+        {{ page.foot_extra }}
+    </body>
 </html>
