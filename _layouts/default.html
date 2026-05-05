@@ -312,25 +312,50 @@ a:hover::after { width: 100%; left: 0; }
     const makeToolbar = (container, svg) => {
       const toolbar = document.createElement('div');
       toolbar.className = 'mermaid-toolbar';
-      toolbar.style.cssText = 'position:absolute;top:4px;right:4px;display:flex;gap:2px;z-index:10;opacity:0;transition:opacity 0.2s;';
+      toolbar.style.cssText = 'position:absolute;top:4px;left:4px;display:flex;gap:4px;z-index:10;opacity:0;transition:opacity 0.2s;';
       container.style.position = 'relative';
       container.addEventListener('mouseenter', () => { toolbar.style.opacity = '1'; });
       container.addEventListener('mouseleave', () => { toolbar.style.opacity = '0'; });
 
       let scale = 1;
+      let panX = 0, panY = 0;
+      let dragging = false, lastX = 0, lastY = 0;
+
       const updateTransform = () => {
-        svg.style.transform = `scale(${scale})`;
+        svg.style.transform = `translate(${panX}px, ${panY}px) scale(${scale})`;
         svg.style.transformOrigin = 'top left';
       };
+
+      svg.style.cursor = 'grab';
+      svg.addEventListener('mousedown', (e) => {
+        if (e.target.closest('.mermaid-toolbar')) return;
+        dragging = true;
+        lastX = e.clientX;
+        lastY = e.clientY;
+        svg.style.cursor = 'grabbing';
+        e.preventDefault();
+      });
+      window.addEventListener('mousemove', (e) => {
+        if (!dragging) return;
+        panX += e.clientX - lastX;
+        panY += e.clientY - lastY;
+        lastX = e.clientX;
+        lastY = e.clientY;
+        updateTransform();
+      });
+      window.addEventListener('mouseup', () => {
+        dragging = false;
+        svg.style.cursor = 'grab';
+      });
 
       const btn = (icon, title, fn) => {
         const b = document.createElement('button');
         b.className = 'c-btn';
-        b.style.cssText = 'width:24px;height:24px;padding:2px;';
+        b.style.cssText = 'width:30px;height:30px;padding:3px;';
         b.title = title;
         const img = document.createElement('img');
         img.src = icon;
-        img.style.cssText = 'width:14px;height:14px;';
+        img.style.cssText = 'width:18px;height:18px;';
         b.appendChild(img);
         b.onclick = (e) => { e.stopPropagation(); fn(); };
         return b;
@@ -338,22 +363,44 @@ a:hover::after { width: 100%; left: 0; }
 
       toolbar.appendChild(btn(ICONS.zoomIn, 'Zoom in', () => { scale = Math.min(5, scale + 0.25); updateTransform(); }));
       toolbar.appendChild(btn(ICONS.zoomOut, 'Zoom out', () => { scale = Math.max(0.25, scale - 0.25); updateTransform(); }));
-      toolbar.appendChild(btn(ICONS.zoomFit, 'Fit', () => { scale = 1; updateTransform(); }));
+      toolbar.appendChild(btn(ICONS.zoomFit, 'Fit', () => { scale = 1; panX = 0; panY = 0; updateTransform(); }));
       toolbar.appendChild(btn(ICONS.reload, 'Reload', () => {
         const original = container.getAttribute('data-original');
         if (original) {
           container.removeAttribute('data-processed');
           container.innerHTML = original;
+          scale = 1; panX = 0; panY = 0;
           mermaid.run();
         }
       }));
       toolbar.appendChild(btn(ICONS.fullscreen, 'Fullscreen', () => {
         const overlay = document.createElement('div');
-        overlay.style.cssText = 'position:fixed;inset:0;z-index:999999;background:var(--bg);display:flex;align-items:center;justify-content:center;overflow:auto;padding:2rem;';
+        overlay.style.cssText = 'position:fixed;inset:0;z-index:999999;background:var(--bg);display:flex;align-items:center;justify-content:center;overflow:hidden;';
         const clone = svg.cloneNode(true);
-        clone.style.cssText = 'max-width:95vw;max-height:95vh;width:auto;height:auto;';
+        clone.style.cssText = 'max-width:95vw;max-height:95vh;width:auto;height:auto;cursor:grab;';
+        let fsScale = 1, fsPanX = 0, fsPanY = 0, fsDragging = false, fsLastX = 0, fsLastY = 0;
+        const fsUpdate = () => {
+          clone.style.transform = `translate(${fsPanX}px, ${fsPanY}px) scale(${fsScale})`;
+          clone.style.transformOrigin = 'top left';
+        };
+        clone.addEventListener('mousedown', (e) => {
+          fsDragging = true; fsLastX = e.clientX; fsLastY = e.clientY;
+          clone.style.cursor = 'grabbing'; e.preventDefault();
+        });
+        window.addEventListener('mousemove', (e) => {
+          if (!fsDragging) return;
+          fsPanX += e.clientX - fsLastX; fsPanY += e.clientY - fsLastY;
+          fsLastX = e.clientX; fsLastY = e.clientY; fsUpdate();
+        });
+        window.addEventListener('mouseup', () => { fsDragging = false; clone.style.cursor = 'grab'; });
+        overlay.addEventListener('wheel', (e) => {
+          e.preventDefault();
+          const delta = e.deltaY > 0 ? -0.1 : 0.1;
+          fsScale = Math.max(0.25, Math.min(5, fsScale + delta));
+          fsUpdate();
+        });
         overlay.appendChild(clone);
-        overlay.onclick = () => { overlay.remove(); };
+        overlay.onclick = (e) => { if (e.target === overlay) overlay.remove(); };
         document.body.appendChild(overlay);
       }));
 
@@ -386,6 +433,7 @@ a:hover::after { width: 100%; left: 0; }
         pre.setAttribute('data-original', source);
         pre.innerHTML = source;
         pre.id = 'mermaid-' + i;
+   
       });
 
       mermaid.run().then(() => {
@@ -472,6 +520,7 @@ a:hover::after { width: 100%; left: 0; }
 
     document.querySelectorAll('pre code').forEach(c => {
       const pre = c.parentElement;
+  
       if (pre.parentElement.classList.contains('code-wrap')) return;
       const wrap = document.createElement('div');
       wrap.className = 'code-wrap';
@@ -498,7 +547,6 @@ a:hover::after { width: 100%; left: 0; }
       });
     });
   </script>
-
   {{ page.foot_extra }}
 </body>
 </html>
