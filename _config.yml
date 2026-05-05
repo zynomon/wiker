@@ -2,10 +2,19 @@ title: "Wikier"
 description: "Wiki + Maker = Wiker"
 image: "https://zynomon.github.io/wiker/thumb.png"
 url: "https://zynomon.github.io/wiker"
+accent: "blue"
+icon: "/wiker.svg"
 
 header:
   logo: "/wiker.svg"
   bg: "https://images.unsplash.com/photo-1557683316-973673baf926?q=80&w=1440"
+  buttons:
+    appearance:
+      show: true
+      pre-pressed: auto
+    pin-header:
+      show: true
+      pre-pressed: auto
   a:
     - order: 1
       url: "https://github.com/zynomon"
@@ -28,18 +37,6 @@ footer:
   notice-text: "2067 - yee"
   a:
     - order: 1
-      url: "https://github.com/zynomon"
-      text: "GitHub"
-      icon: "https://cdn-icons-png.flaticon.com/512/25/25231.png"
-    - order: 2
-      url: "https://gitlab.com/zynomon"
-      text: "GitLab"
-      icon: "https://cdn-icons-png.flaticon.com/512/5968/5968853.png"
-    - order: 3
-      url: "https://www.qt.io"
-      text: "Qt"
-      icon: "https://upload.wikimedia.org/wikipedia/commons/0/0b/Qt_logo_2016.svg"
-    - order: 4
       url: "https://codeberg.org/zynomon"
       text: "Codeberg"
 
@@ -48,8 +45,7 @@ kramdown:
   syntax_highlighter: rouge
   syntax_highlighter_opts:
     block:
-      line_numbers: false
+      line_numbers: true
 
 plugins:
-  - jekyll-seo-tag
   - jekyll-remote-theme        # would this work?

@@ -1,13 +1,61 @@
 <!DOCTYPE html>
-<html lang="{{ page.lang | default: 'en' }}" data-theme="light">
+<html lang="{{ page.lang | default: 'en' }}"
+      data-theme="light"
+      data-accent="{{ page.accent | default: site.accent | default: 'blue' }}">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{{ page.title | default: site.title }}</title>
-  {%- seo -%}
+
+  {% assign _title = page.title | default: site.title %}
+  {% assign _desc  = page.description | default: site.description %}
+  {% assign _img   = page.image | default: site.image %}
+
+  <title>{{ _title }}</title>
+  <meta name="description" content="{{ _desc }}">
+
+  <meta property="og:type"         content="website">
+  <meta property="og:site_name"    content="{{ site.title }}">
+  <meta property="og:title"        content="{{ _title }}">
+  <meta property="og:description"  content="{{ _desc }}">
+  <meta property="og:url"          content="{{ page.url | absolute_url }}">
+  {% if _img %}
+  <meta property="og:image"        content="{{ _img }}">
+  <meta property="og:image:width"  content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt"    content="{{ _title }}">
+  {% endif %}
+
+  <meta name="twitter:card"        content="summary_large_image">
+  <meta name="twitter:title"       content="{{ _title }}">
+  <meta name="twitter:description" content="{{ _desc }}">
+  {% if _img %}<meta name="twitter:image" content="{{ _img }}">{% endif %}
+
+  <meta name="theme-color" content="{{ page.color | default: site.color | default: '#f1f4f8' }}">
+
+  {% assign favicon = page.icon | default: site.icon %}
+  {% if favicon %}
+  <link rel="icon" type="image/svg+xml" href="{{ favicon | relative_url }}">
+  <link rel="apple-touch-icon" href="{{ favicon | relative_url }}">
+  {% endif %}
+
   <style>
-    :root[data-theme='light'] { --bg: #dce1e8; --pn: #f1f4f8; --tx: #2d3436; --bd: rgba(0,0,0,0.06); --sd: rgba(100,115,145,0.3); --ht: #ffffff; --it: rgba(0,0,0,0.07); --ac: #2563eb; --wl: #e8ebf2; }
-    :root[data-theme='dark']  { --bg: #0d0e12; --pn: #1a1c22; --tx: #e1e4e8; --bd: rgba(255,255,255,0.03); --sd: rgba(0,0,0,0.65); --ht: rgba(255,255,255,0.06); --it: rgba(0,0,0,0.4); --ac: #3b82f6; --wl: #121418; }
+    :root[data-theme='light'] { --bg: #dce1e8; --pn: #f1f4f8; --tx: #2d3436; --bd: rgba(0,0,0,0.06); --sd: rgba(100,115,145,0.3); --ht: #ffffff; --it: rgba(0,0,0,0.07); --wl: #e8ebf2; }
+    :root[data-theme='dark']  { --bg: #0d0e12; --pn: #1a1c22; --tx: #e1e4e8; --bd: rgba(255,255,255,0.03); --sd: rgba(0,0,0,0.65); --ht: rgba(255,255,255,0.06); --it: rgba(0,0,0,0.40); --wl: #121418; }
+
+    [data-accent='blue'][data-theme='light']       { --ac: #2563eb; }
+    [data-accent='blue'][data-theme='dark']        { --ac: #3b82f6; }
+    [data-accent='light-grey'][data-theme='light'] { --ac: #8896a8; }
+    [data-accent='light-grey'][data-theme='dark']  { --ac: #a0aec0; }
+    [data-accent='dark-grey'][data-theme='light']  { --ac: #2d3748; }
+    [data-accent='dark-grey'][data-theme='dark']   { --ac: #718096; }
+    [data-accent='brown'][data-theme='light']      { --ac: #7c4a2d; }
+    [data-accent='brown'][data-theme='dark']       { --ac: #b07850; }
+    [data-accent='green'][data-theme='light']      { --ac: #1a7a3c; }
+    [data-accent='green'][data-theme='dark']       { --ac: #38a169; }
+    [data-accent='mint'][data-theme='light']       { --ac: #2a9d8f; }
+    [data-accent='mint'][data-theme='dark']        { --ac: #4fd1c5; }
+    [data-accent='red'][data-theme='light']        { --ac: #c0392b; }
+    [data-accent='red'][data-theme='dark']         { --ac: #fc8181; }
 
     * { box-sizing: border-box; transition: background .3s, color .3s, transform .2s, opacity .3s, height .3s, padding .3s, box-shadow .3s; }
     body { margin: 0; font-family: -apple-system, system-ui, sans-serif; background: var(--bg); color: var(--tx); font-size: 13px; line-height: 1.5; min-height: 100vh; display: flex; justify-content: center; }
@@ -58,7 +106,7 @@
     .util { display: flex; gap: 8px; flex-shrink: 0; }
     .c-btn { width: 34px; height: 34px; border-radius: 50%; border: none; cursor: pointer; background: var(--wl); color: var(--tx); display: flex; align-items: center; justify-content: center; box-shadow: 4px 4px 8px var(--sd), inset -2px -2px 4px var(--it), inset 2px 2px 4px var(--ht); }
     .c-btn:active { transform: scale(0.9); }
-    .active { color: #fff !important; background: var(--ac) !important; box-shadow: inset -2px -2px 4px rgba(0,0,0,0.2) !important; }
+    .active { color: #ffffff !important; background: var(--ac) !important; box-shadow: inset -2px -2px 4px rgba(0,0,0,0.2) !important; }
 
     main { flex: 1; padding: 1rem; background: transparent; color: inherit; }
 
@@ -249,11 +297,17 @@
           </div>
 
           <div class="util">
-            <button class="c-btn" id="pB" title="Pin"><svg viewBox="0 0 24 24" width="16"><path fill="currentColor" d="M16,12V4H17V2H7V4H8V12L6,14V16H11.2V22H12.8V16H18V14L16,12Z"/></svg></button>
+            {% assign _btn_th = site.header.buttons.appearance %}
+            {% unless _btn_th.show == false %}
             <button class="c-btn" id="tB" title="Theme">
               <svg class="l-only" viewBox="0 0 24 24" width="16"><path fill="currentColor" d="M12,18c-3.3,0-6-2.7-6-6s2.7-6,6-6s6,2.7,6,6S15.3,18,12,18zM11,1h2v3h-2V1z M11,20h2v3h-2V20z M3.5,4.9l1.4-1.4l2.1,2.1L5.6,7.1L3.5,4.9z M16.9,18.3l1.4-1.4l2.1,2.1l-1.4,1.4L16.9,18.3z M1,11h3v2H1V11z M20,11h3v2h-3V11z M4.9,20.5l-1.4-1.4l2.1-2.1l1.4,1.4L4.9,20.5z M18.3,7.1l-1.4-1.4l2.1-2.1l1.4,1.4L18.3,7.1z"/></svg>
               <svg class="d-only" viewBox="0 0 24 24" width="16"><path fill="currentColor" d="M12,3c-4.97,0-9,4.03-9,9s4.03,9,9,9s9-4.03,9-9c0-0.46-0.04-0.92-0.1-1.36c-0.98,1.37-2.58,2.26-4.4,2.26 c-2.98,0-5.4-2.42-5.4-5.4c0-1.81,0.89-3.42,2.26-4.4C12.92,3.04,12.46,3,12,3z"/></svg>
             </button>
+            {% endunless %}
+            {% assign _btn_pin = site.header.buttons.pin-header %}
+            {% unless _btn_pin.show == false %}
+            <button class="c-btn" id="pB" title="Pin"><svg viewBox="0 0 24 24" width="16"><path fill="currentColor" d="M16,12V4H17V2H7V4H8V12L6,14V16H11.2V22H12.8V16H18V14L16,12Z"/></svg></button>
+            {% endunless %}
           </div>
         </div>
 
@@ -291,36 +345,59 @@
   <script>
     const r = document.documentElement, h = document.getElementById('h');
 
+    let consent = false;
     const trySave = (key, val) => {
-      if (localStorage.getItem('consent') === 'true') {
+      if (consent || (consent = confirm("this site wants to save this preference in your device are you okay with it? this is also referred as \"cookie\"."))) {
         localStorage.setItem(key, val);
-      } else if (!sessionStorage.getItem('denied')) {
-        if (confirm("this site wants to save this preference in your device are you okay with it? this is also referred as \"cookie\".")) {
-          localStorage.setItem('consent', 'true');
-          localStorage.setItem(key, val);
-        } else {
-          sessionStorage.setItem('denied', 'true');
-        }
       }
     };
 
-    document.getElementById('tB').onclick = () => {
-      const v = r.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-      r.setAttribute('data-theme', v);
-      trySave('th', v);
-    };
+    {% assign _btn_th = site.header.buttons.appearance %}
+    {% unless _btn_th.show == false %}
+    (function () {
+      const tB = document.getElementById('tB');
+      const prePressed = '{{ _btn_th.pre-pressed }}';
 
-    document.getElementById('pB').onclick = () => {
-      const s = !h.classList.contains('sticky');
-      h.classList.toggle('sticky', s);
-      document.getElementById('pB').classList.toggle('active', s);
-      trySave('pi', s);
-    };
+      const apply = v => r.setAttribute('data-theme', v);
 
-    const st = localStorage.getItem('th'), sp = localStorage.getItem('pi');
-    if (st) r.setAttribute('data-theme', st);
-    else if (window.matchMedia('(prefers-color-scheme: dark)').matches) r.setAttribute('data-theme', 'dark');
-    if (sp === 'true') { h.classList.add('sticky'); document.getElementById('pB').classList.add('active'); }
+      const saved = localStorage.getItem('th');
+      if (prePressed === 'auto') {
+        if (saved) apply(saved);
+        else if (window.matchMedia('(prefers-color-scheme: dark)').matches) apply('dark');
+      } else {
+        apply(prePressed === 'dark' ? 'dark' : 'light');
+      }
+
+      tB.onclick = () => {
+        const v = r.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        apply(v);
+        trySave('th', v);
+      };
+    })();
+    {% endunless %}
+
+    {% assign _btn_pin = site.header.buttons.pin-header %}
+    {% unless _btn_pin.show == false %}
+    (function () {
+      const pB = document.getElementById('pB');
+      const prePressed = '{{ _btn_pin.pre-pressed }}';
+
+      const apply = v => { h.classList.toggle('sticky', v); pB.classList.toggle('active', v); };
+
+      const saved = localStorage.getItem('pi');
+      if (prePressed === 'auto') {
+        apply(saved === 'true');
+      } else {
+        apply(prePressed === 'yes');
+      }
+
+      pB.onclick = () => {
+        const s = !h.classList.contains('sticky');
+        apply(s);
+        trySave('pi', s);
+      };
+    })();
+    {% endunless %}
 
     const COPY  = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
     const CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>';
