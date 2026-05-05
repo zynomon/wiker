@@ -1,970 +1,360 @@
-<!doctype html>
-<html
-    lang="{{ page.lang | default: 'en' }}"
-    data-theme="dark"
-    data-accent="{{ page.accent | default: site.accent | default: 'dark-grey' }}"
->
-    <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+<!DOCTYPE html>
+<html lang="{{ page.lang | default: 'en' }}"
+      data-theme="dark"
+      data-accent="{{ page.accent | default: site.accent | default: 'dark-grey' }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>{{ page.title | default: site.title }}</title>
-        <meta
-            name="description"
-            content="{{ page.description | default: site.description }}"
-        />
+  <title>{{ page.title | default: site.title }}</title>
+  <meta name="description" content="{{ page.description | default: site.description }}">
 
-        <meta property="og:type" content="website" />
-        <meta property="og:site_name" content="{{ site.title }}" />
-        <meta
-            property="og:title"
-            content="{{ page.title | default: site.title }}"
-        />
-        <meta
-            property="og:description"
-            content="{{ page.description | default: site.description }}"
-        />
-        <meta property="og:url" content="{{ page.url | absolute_url }}" />
-        {% if page.thumbnail or site.thumbnail %}
-        <meta
-            property="og:image"
-            content="{{ page.thumbnail | default: site.thumbnail }}"
-        />
-        <meta property="og:image:width" content="1200" />
-        <meta property="og:image:height" content="630" />
-        <meta
-            property="og:image:alt"
-            content="{{ page.title | default: site.title }}"
-        />
-        {% endif %}
+  <meta property="og:type"         content="website">
+  <meta property="og:site_name"    content="{{ site.title }}">
+  <meta property="og:title"        content="{{ page.title | default: site.title }}">
+  <meta property="og:description"  content="{{ page.description | default: site.description }}">
+  <meta property="og:url"          content="{{ page.url | absolute_url }}">
+  {% if page.thumbnail or site.thumbnail %}
+  <meta property="og:image"        content="{{ page.thumbnail | default: site.thumbnail }}">
+  <meta property="og:image:width"  content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt"    content="{{ page.title | default: site.title }}">
+  {% endif %}
 
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta
-            name="twitter:title"
-            content="{{ page.title | default: site.title }}"
-        />
-        <meta
-            name="twitter:description"
-            content="{{ page.description | default: site.description }}"
-        />
-        {% if page.thumbnail or site.thumbnail %}
-        <meta
-            name="twitter:image"
-            content="{{ page.thumbnail | default: site.thumbnail }}"
-        />
-        {% endif %}
+  <meta name="twitter:card"        content="summary_large_image">
+  <meta name="twitter:title"       content="{{ page.title | default: site.title }}">
+  <meta name="twitter:description" content="{{ page.description | default: site.description }}">
+  {% if page.thumbnail or site.thumbnail %}<meta name="twitter:image" content="{{ page.thumbnail | default: site.thumbnail }}">{% endif %}
 
-        <meta
-            name="theme-color"
-            content="{{ page.color | default: site.color | default: '#f1f4f8' }}"
-        />
+  <meta name="theme-color" content="{{ page.color | default: site.color | default: '#f1f4f8' }}">
 
-        {% assign favicon = page.icon | default: site.icon %} {% if favicon %}
-        <link
-            rel="icon"
-            type="image/svg+xml"
-            href="{{ favicon | relative_url }}"
-        />
-        <link rel="apple-touch-icon" href="{{ favicon | relative_url }}" />
-        {% endif %}
+  {% assign favicon = page.icon | default: site.icon %}
+  {% if favicon %}
+  <link rel="icon" type="image/svg+xml" href="{{ favicon | relative_url }}">
+  <link rel="apple-touch-icon"          href="{{ favicon | relative_url }}">
+  {% endif %}
 
-        <style>
-            :root,
-            [data-accent=""],
-        [data-accent="auto"] { --h: 0; --s: 0%; --ac-l: 45%; --ac2-l: 65%; --bg-l-r: 245; --bg-l-g: 245; --bg-l-b: 245; --pn-l-r: 252; --pn-l-g: 252; --pn-l-b: 252; --tx-l: 10%; --bd-a: 0.04; --sd-a: 0.04; --ht-l: 100%; --it-a: 0.02; --wl-l-r: 238; --wl-l-g: 238; --wl-l-b: 238; --bg-d-r: 18; --bg-d-g: 18; --bg-d-b: 18; --pn-d: 10%; --tx-d: 88%; --bd-d-a: 0.03; --sd-d-a: 0.45; --ht-d-a: 0.03; --it-d-a: 0.25; --wl-d: 8%; }
-            [data-accent="dark-grey"] {
-                --bg-l-r: 227;
-                --bg-l-g: 227;
-                --bg-l-b: 227;
-                --pn-l-r: 240;
-                --pn-l-g: 240;
-                --pn-l-b: 240;
-                --wl-l-r: 219;
-                --wl-l-g: 219;
-                --wl-l-b: 219;
-                --bg-d-r: 26;
-                --bg-d-g: 26;
-                --bg-d-b: 26;
-                --h: 0;
-                --s: 0%;
-                --ac-l: 40%;
-                --ac2-l: 60%;
-                --tx-l: 8%;
-                --bd-a: 0.08;
-                --sd-a: 0.1;
-                --ht-l: 96%;
-                --it-a: 0.05;
-                --pn-d: 2%;
-                --tx-d: 82%;
-                --bd-d-a: 0.05;
-                --sd-d-a: 0.88;
-                --ht-d-a: 0.05;
-                --it-d-a: 0.58;
-                --wl-d: 1%;
-            }
-            [data-accent="blue"] {
-                --bg-l-r: 235;
-                --bg-l-g: 237;
-                --bg-l-b: 244;
-                --pn-l-r: 245;
-                --pn-l-g: 247;
-                --pn-l-b: 252;
-                --wl-l-r: 226;
-                --wl-l-g: 230;
-                --wl-l-b: 240;
-                --bg-d-r: 26;
-                --bg-d-g: 28;
-                --bg-d-b: 34;
-                --h: 220;
-                --s: 13%;
-            }
-            [data-accent="brown"] {
-                --bg-l-r: 242;
-                --bg-l-g: 236;
-                --bg-l-b: 230;
-                --pn-l-r: 250;
-                --pn-l-g: 246;
-                --pn-l-b: 241;
-                --wl-l-r: 239;
-                --wl-l-g: 232;
-                --wl-l-b: 223;
-                --bg-d-r: 28;
-                --bg-d-g: 26;
-                --bg-d-b: 24;
-                --h: 25;
-                --s: 40%;
-            }
-            [data-accent="green"] {
-                --bg-l-r: 232;
-                --bg-l-g: 240;
-                --bg-l-b: 234;
-                --pn-l-r: 242;
-                --pn-l-g: 248;
-                --pn-l-b: 244;
-                --wl-l-r: 224;
-                --wl-l-g: 236;
-                --wl-l-b: 228;
-                --bg-d-r: 26;
-                --bg-d-g: 28;
-                --bg-d-b: 26;
-                --h: 141;
-                --s: 40%;
-            }
-            [data-accent="mint"] {
-                --bg-l-r: 232;
-                --bg-l-g: 240;
-                --bg-l-b: 240;
-                --pn-l-r: 242;
-                --pn-l-g: 248;
-                --pn-l-b: 248;
-                --wl-l-r: 224;
-                --wl-l-g: 236;
-                --wl-l-b: 236;
-                --bg-d-r: 26;
-                --bg-d-g: 28;
-                --bg-d-b: 28;
-                --h: 174;
-                --s: 40%;
-            }
-            [data-accent="red"] {
-                --bg-l-r: 244;
-                --bg-l-g: 235;
-                --bg-l-b: 235;
-                --pn-l-r: 252;
-                --pn-l-g: 245;
-                --pn-l-b: 245;
-                --wl-l-r: 240;
-                --wl-l-g: 226;
-                --wl-l-b: 226;
-                --bg-d-r: 28;
-                --bg-d-g: 26;
-                --bg-d-b: 26;
-                --h: 0;
-                --s: 60%;
-            }
+  <style>
+    :root,
+    [data-accent=""],
+    [data-accent="auto"] { --h: 0; --s: 0%; --ac-l: 45%; --ac2-l: 65%; --bg-l-r: 245; --bg-l-g: 245; --bg-l-b: 245; --pn-l-r: 252; --pn-l-g: 252; --pn-l-b: 252; --tx-l: 10%; --bd-a: 0.04; --sd-a: 0.04; --ht-l: 100%; --it-a: 0.02; --wl-l-r: 238; --wl-l-g: 238; --wl-l-b: 238; --bg-d-r: 18; --bg-d-g: 18; --bg-d-b: 18; --pn-d: 10%; --tx-d: 88%; --bd-d-a: 0.03; --sd-d-a: 0.45; --ht-d-a: 0.03; --it-d-a: 0.25; --wl-d: 8%; }
+    [data-accent="dark-grey"] { --bg-l-r: 227; --bg-l-g: 227; --bg-l-b: 227; --pn-l-r: 240; --pn-l-g: 240; --pn-l-b: 240; --wl-l-r: 219; --wl-l-g: 219; --wl-l-b: 219; --bg-d-r: 26; --bg-d-g: 26; --bg-d-b: 26; --h: 0; --s: 0%; --ac-l: 40%; --ac2-l: 60%; --tx-l: 8%; --bd-a: 0.08; --sd-a: 0.1; --ht-l: 96%; --it-a: 0.05; --pn-d: 2%; --tx-d: 82%; --bd-d-a: 0.05; --sd-d-a: 0.88; --ht-d-a: 0.05; --it-d-a: 0.58; --wl-d: 1%; }
+    [data-accent="blue"] { --bg-l-r: 235; --bg-l-g: 237; --bg-l-b: 244; --pn-l-r: 245; --pn-l-g: 247; --pn-l-b: 252; --wl-l-r: 226; --wl-l-g: 230; --wl-l-b: 240; --bg-d-r: 26; --bg-d-g: 28; --bg-d-b: 34; --h: 220; --s: 13%; }
+    [data-accent="brown"] { --bg-l-r: 242; --bg-l-g: 236; --bg-l-b: 230; --pn-l-r: 250; --pn-l-g: 246; --pn-l-b: 241; --wl-l-r: 239; --wl-l-g: 232; --wl-l-b: 223; --bg-d-r: 28; --bg-d-g: 26; --bg-d-b: 24; --h: 25; --s: 40%; }
+    [data-accent="green"] { --bg-l-r: 232; --bg-l-g: 240; --bg-l-b: 234; --pn-l-r: 242; --pn-l-g: 248; --pn-l-b: 244; --wl-l-r: 224; --wl-l-g: 236; --wl-l-b: 228; --bg-d-r: 26; --bg-d-g: 28; --bg-d-b: 26; --h: 141; --s: 40%; }
+    [data-accent="mint"] { --bg-l-r: 232; --bg-l-g: 240; --bg-l-b: 240; --pn-l-r: 242; --pn-l-g: 248; --pn-l-b: 248; --wl-l-r: 224; --wl-l-g: 236; --wl-l-b: 236; --bg-d-r: 26; --bg-d-g: 28; --bg-d-b: 28; --h: 174; --s: 40%; }
+    [data-accent="red"] { --bg-l-r: 244; --bg-l-g: 235; --bg-l-b: 235; --pn-l-r: 252; --pn-l-g: 245; --pn-l-b: 245; --wl-l-r: 240; --wl-l-g: 226; --wl-l-b: 226; --bg-d-r: 28; --bg-d-g: 26; --bg-d-b: 26; --h: 0; --s: 60%; }
 
-            :root[data-theme="light"] {
-                --ac: hsl(var(--h), var(--s), var(--ac-l, 45%));
-                --ac2: hsl(var(--h), var(--s), var(--ac2-l, 65%));
-                --bg: rgb(
-                    var(--bg-l-r, 237),
-                    var(--bg-l-g, 237),
-                    var(--bg-l-b, 237)
-                );
-                --pn: rgb(
-                    var(--pn-l-r, 247),
-                    var(--pn-l-g, 247),
-                    var(--pn-l-b, 247)
-                );
-                --tx: hsl(var(--h), calc(var(--s) * 0.02), var(--tx-l, 10%));
-                --bd: hsla(
-                    var(--h),
-                    calc(var(--s) * 0.1),
-                    0%,
-                    var(--bd-a, 0.04)
-                );
-                --sd: hsla(
-                    var(--h),
-                    calc(var(--s) * 0.2),
-                    0%,
-                    var(--sd-a, 0.04)
-                );
-                --ht: hsl(var(--h), calc(var(--s) * 0.01), var(--ht-l, 100%));
-                --it: hsla(
-                    var(--h),
-                    calc(var(--s) * 0.1),
-                    0%,
-                    var(--it-a, 0.02)
-                );
-                --wl: rgb(
-                    var(--wl-l-r, 229),
-                    var(--wl-l-g, 229),
-                    var(--wl-l-b, 229)
-                );
-            }
+    :root[data-theme="light"] {
+      --ac: hsl(var(--h), var(--s), var(--ac-l, 45%));
+      --ac2: hsl(var(--h), var(--s), var(--ac2-l, 65%));
+      --bg: rgb(var(--bg-l-r, 237), var(--bg-l-g, 237), var(--bg-l-b, 237));
+      --pn: rgb(var(--pn-l-r, 247), var(--pn-l-g, 247), var(--pn-l-b, 247));
+      --tx: hsl(var(--h), calc(var(--s) * 0.02), var(--tx-l, 10%));
+      --bd: hsla(var(--h), calc(var(--s) * 0.1), 0%, var(--bd-a, 0.04));
+      --sd: hsla(var(--h), calc(var(--s) * 0.2), 0%, var(--sd-a, 0.04));
+      --ht: hsl(var(--h), calc(var(--s) * 0.01), var(--ht-l, 100%));
+      --it: hsla(var(--h), calc(var(--s) * 0.1), 0%, var(--it-a, 0.02));
+      --wl: rgb(var(--wl-l-r, 229), var(--wl-l-g, 229), var(--wl-l-b, 229));
+    }
 
-            :root[data-theme="dark"] {
-                --ac: hsl(var(--h), calc(var(--s) * 0.6), var(--ac-l, 45%));
-                --ac2: hsl(var(--h), calc(var(--s) * 0.4), var(--ac2-l, 65%));
-                --bg: rgb(
-                    calc(var(--bg-d-r, 26) * 0.5),
-                    calc(var(--bg-d-g, 28) * 0.5),
-                    calc(var(--bg-d-b, 34) * 0.5)
-                );
-                --pn: rgb(
-                    var(--bg-d-r, 26),
-                    var(--bg-d-g, 28),
-                    var(--bg-d-b, 34)
-                );
-                --tx: hsl(var(--h), calc(var(--s) * 0.02), var(--tx-d, 88%));
-                --bd: hsla(
-                    var(--h),
-                    calc(var(--s) * 0.3),
-                    100%,
-                    var(--bd-d-a, 0.03)
-                );
-                --sd: hsla(0, 0%, 0%, var(--sd-d-a, 0.45));
-                --ht: hsla(
-                    var(--h),
-                    calc(var(--s) * 0.2),
-                    100%,
-                    var(--ht-d-a, 0.03)
-                );
-                --it: hsla(0, 0%, 0%, var(--it-d-a, 0.25));
-                --wl: rgb(
-                    calc(var(--bg-d-r, 26) * 0.7),
-                    calc(var(--bg-d-g, 28) * 0.7),
-                    calc(var(--bg-d-b, 34) * 0.7)
-                );
-            }
-            * {
-                box-sizing: border-box;
-                transition:
-                    background 0.3s,
-                    color 0.3s,
-                    transform 0.2s,
-                    opacity 0.3s,
-                    height 0.3s,
-                    padding 0.3s,
-                    box-shadow 0.3s;
-            }
-            body {
-                margin: 0;
-                font-family: -apple-system, system-ui, sans-serif;
-                background: var(--bg);
-                color: var(--tx);
-                font-size: 13px;
-                line-height: 1.5;
-                min-height: 100vh;
-                display: flex;
-                justify-content: center;
-            }
+    :root[data-theme="dark"] {
+      --ac: hsl(var(--h), calc(var(--s) * 0.6), var(--ac-l, 45%));
+      --ac2: hsl(var(--h), calc(var(--s) * 0.4), var(--ac2-l, 65%));
+      --bg: rgb(calc(var(--bg-d-r, 26) * 0.5), calc(var(--bg-d-g, 28) * 0.5), calc(var(--bg-d-b, 34) * 0.5));
+      --pn: rgb(var(--bg-d-r, 26), var(--bg-d-g, 28), var(--bg-d-b, 34));
+      --tx: hsl(var(--h), calc(var(--s) * 0.02), var(--tx-d, 88%));
+      --bd: hsla(var(--h), calc(var(--s) * 0.3), 100%, var(--bd-d-a, 0.03));
+      --sd: hsla(0, 0%, 0%, var(--sd-d-a, 0.45));
+      --ht: hsla(var(--h), calc(var(--s) * 0.2), 100%, var(--ht-d-a, 0.03));
+      --it: hsla(0, 0%, 0%, var(--it-d-a, 0.25));
+      --wl: rgb(calc(var(--bg-d-r, 26) * 0.7), calc(var(--bg-d-g, 28) * 0.7), calc(var(--bg-d-b, 34) * 0.7));
+    }
 
-            .bg-custom {
-                position: fixed;
-                inset: 0;
-                z-index: -1;
-                pointer-events: none;
-                overflow: hidden;
-            }
+    * { box-sizing: border-box; transition: background .3s, color .3s, transform .2s, opacity .3s, height .3s, padding .3s, box-shadow .3s; }
+    body { margin: 0; font-family: -apple-system, system-ui, sans-serif; background: var(--bg); color: var(--tx); font-size: 13px; line-height: 1.5; min-height: 100vh; display: flex; justify-content: center; }
 
-            .pnl {
-                width: 97%;
-                max-width: 1440px;
-                margin: 2rem 0;
-                background: var(--pn);
-                border-radius: 32px;
-                border: 1px solid var(--bd);
-                padding: 1.5rem;
-                box-shadow:
-                    20px 20px 60px var(--sd),
-                    -20px -20px 60px var(--ht),
-                    inset -8px -8px 16px var(--it),
-                    inset 8px 8px 16px var(--ht);
-                display: flex;
-                flex-direction: column;
-                min-height: 94vh;
-                position: relative;
-            }
+    .bg-custom { position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; }
 
-            .hdr {
-                width: 100%;
-                z-index: 1000;
-                background: var(--pn)
-                 background: var(--pn) url('{{ site.header.bg }}') center/cover;
-                    center/cover;
-                border-radius: 20px;
-                border: 1px solid var(--bd);
-                margin-bottom: 2rem;
-                box-shadow:
-                    inset -8px -8px 20px var(--it),
-                    inset 8px 8px 20px var(--ht),
-                    0 10px 40px var(--sd),
-                    0 2px 8px var(--sd);
-                position: relative;
-                overflow: hidden;
-                flex-shrink: 0;
-                user-select: none;
-                -webkit-user-select: none;
-            }
+    .pnl {
+      width: 97%; max-width: 1440px; margin: 2rem 0; background: var(--pn);
+      border-radius: 32px; border: 1px solid var(--bd); padding: 1.5rem;
+      box-shadow: 20px 20px 60px var(--sd), -20px -20px 60px var(--ht), inset -8px -8px 16px var(--it), inset 8px 8px 16px var(--ht);
+      display: flex; flex-direction: column; min-height: 94vh; position: relative;
+    }
 
-            .hdr-ov {
-                background: var(--pn);
-                opacity: 0.85;
-                backdrop-filter: blur(14px);
-            }
+    .hdr {
+      width: 100%; z-index: 1000;
+      background: var(--pn) url('{{ site.header.bg }}') center/cover;
+      border-radius: 20px; border: 1px solid var(--bd); margin-bottom: 2rem;
+      box-shadow: inset -8px -8px 20px var(--it), inset 8px 8px 20px var(--ht), 0 10px 40px var(--sd), 0 2px 8px var(--sd);
+      position: relative; overflow: hidden; flex-shrink: 0;
+      user-select: none; -webkit-user-select: none;
+    }
 
-            .sticky {
-                position: sticky;
-                top: 1rem;
-                box-shadow:
-                    inset -8px -8px 20px var(--it),
-                    inset 8px 8px 20px var(--ht),
-                    0 15px 40px var(--sd),
-                    0 4px 12px var(--sd);
-            }
+    {% assign bg_wrapper = site.header.bg-wrapper | default: 'auto' %}
+    {% if bg_wrapper == 'auto' %}
+    .hdr-ov { background: var(--pn); opacity: 0.85; backdrop-filter: blur(14px); }
+    {% elsif bg_wrapper == 'blur' %}
+    .hdr-ov { background: transparent; backdrop-filter: blur(14px); }
+    {% elsif bg_wrapper == 'noise' %}
+    .hdr-ov { background: transparent; backdrop-filter: blur(14px); position: relative; }
+    .hdr-ov::after { content: ''; position: absolute; inset: 0; opacity: 0.04; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); pointer-events: none; }
+    {% elsif bg_wrapper == 'none' %}
+    .hdr-ov { background: transparent; }
+    {% endif %}
 
-            .h-top {
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                padding: 0.6rem 1.4rem;
-                min-height: 56px;
-            }
-            .h-btm {
-                display: flex;
-                gap: 4px;
-                padding: 0 1.4rem 0.8rem;
-                flex-wrap: wrap;
-                overflow: hidden;
-                height: auto;
-                opacity: 1;
-            }
+    .sticky { position: sticky; top: 1rem; box-shadow: inset -8px -8px 20px var(--it), inset 8px 8px 20px var(--ht), 0 15px 40px var(--sd), 0 4px 12px var(--sd); }
 
-            .sticky:not(:hover) .h-btm,
-            .sticky:not(:hover) .rel-path {
-                height: 0;
-                padding: 0;
-                opacity: 0;
-                pointer-events: none;
-            }
+    .h-top { display: flex; align-items: center; justify-content: space-between; padding: 0.6rem 1.4rem; min-height: 56px; }
+    .h-btm { display: flex; gap: 4px; padding: 0 1.4rem 0.8rem; flex-wrap: wrap; overflow: hidden; height: auto; opacity: 1; }
 
-            .h-logo {
-                height: 44px;
-                padding: 0 12px;
-                display: flex;
-                align-items: center;
-                text-decoration: none;
-                flex-shrink: 0;
-            }
-            .f-logo {
-                display: flex;
-                align-items: center;
-                flex-shrink: 0;
-                height: 32px;
-                width: auto;
-            }
-            img {
-                border: none !important;
-                outline: none !important;
-                max-height: 100%;
-                width: auto;
-            }
+    .sticky:not(:hover) .h-btm, .sticky:not(:hover) .rel-path { height: 0; padding: 0; opacity: 0; pointer-events: none; }
 
-            .rel-path {
-                font-weight: 700;
-                opacity: 0.4;
-                margin-right: auto;
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                display: flex;
-                align-items: center;
-            }
-            .rel-path a {
-                text-decoration: none;
-                color: inherit;
-            }
-            .rel-path a:hover {
-                text-decoration: underline;
-                opacity: 1;
-            }
-            .sep {
-                opacity: 0.2;
-                font-weight: 300;
-                padding: 0 4px;
-            }
+    .h-logo { height: 44px; padding: 0 12px; display: flex; align-items: center; text-decoration: none; flex-shrink: 0; }
+    .f-logo { display: flex; align-items: center; flex-shrink: 0; height: {{ site.footer.logo.height | default: '36px' }}; width: {{ site.footer.logo.width | default: 'auto' }}; }
+    img { border: none !important; outline: none !important; max-height: 100%; width: auto; }
 
-            .a-lnk {
-                padding: 8px 12px;
-                text-decoration: none;
-                color: inherit;
-                font-weight: 600;
-                display: flex;
-                align-items: center;
-                position: relative;
-            }
-            .a-lnk span {
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-            }
+    .rel-path { font-weight: 700; opacity: 0.4; margin-right: auto; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: center; }
+    .rel-path a { text-decoration: none; color: inherit; }
+    .rel-path a:hover { text-decoration: underline; opacity: 1; }
+    .sep { opacity: 0.2; font-weight: 300; padding: 0 4px; }
 
-            .a-lnk::after {
-                content: "";
-                position: absolute;
-                bottom: 2px;
-                left: 50%;
-                width: 0;
-                height: 2px;
-                background: var(--ac);
-                transition:
-                    width 0.3s,
-                    left 0.3s;
-            }
-            .a-lnk:hover::after {
-                width: 80%;
-                left: 10%;
-            }
+    .a-lnk { padding: 8px 12px; text-decoration: none; color: inherit; font-weight: 600; display: flex; align-items: center; position: relative; }
+    .a-lnk span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-            .a-lnk img {
-                width: 0;
-                height: 16px;
-                opacity: 0;
-                filter: brightness(0) invert(1);
-                transition: all 0.25s;
-            }
-            .a-lnk:hover img {
-                width: 16px;
-                opacity: 1;
-                margin-right: 8px;
-                transform: scale(1.3) rotate(-14deg);
-                filter: none;
-            }
+    .a-lnk::after { content: ''; position: absolute; bottom: 2px; left: 50%; width: 0; height: 2px; background: var(--ac); transition: width 0.3s, left 0.3s; }
+    .a-lnk:hover::after { width: 80%; left: 10%; }
 
-            .util {
-                display: flex;
-                gap: 8px;
-                flex-shrink: 0;
-            }
-            .c-btn {
-                width: 34px;
-                height: 34px;
-                border-radius: 50%;
-                border: none;
-                cursor: pointer;
-                background: var(--wl);
-                color: var(--tx);
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                box-shadow:
-                    4px 4px 8px var(--sd),
-                    -4px -4px 8px var(--ht),
-                    inset -2px -2px 4px var(--it),
-                    inset 2px 2px 4px var(--ht);
-            }
-            .c-btn:active {
-                transform: scale(0.9);
-                box-shadow:
-                    inset 3px 3px 6px var(--it),
-                    inset -3px -3px 6px var(--ht);
-            }
-            .active {
-                color: var(--pn) !important;
-                background: var(--ac) !important;
-                box-shadow:
-                    inset 3px 3px 6px rgba(0, 0, 0, 0.3),
-                    inset -3px -3px 6px rgba(255, 255, 255, 0.05) !important;
-            }
+    .a-lnk img { width: 0; height: 16px; opacity: 0; filter: brightness(0) invert(1); transition: all 0.25s; }
+    .a-lnk:hover img { width: 16px; opacity: 1; margin-right: 8px; transform: scale(1.3) rotate(-14deg); filter: none; }
 
-            main {
-                flex: 1;
-                padding: 1rem;
-                background: transparent;
-                color: inherit;
-            }
+    .util { display: flex; gap: 8px; flex-shrink: 0; }
+    .c-btn { width: 34px; height: 34px; border-radius: 50%; border: none; cursor: pointer; background: var(--wl); color: var(--tx); display: flex; align-items: center; justify-content: center; box-shadow: 4px 4px 8px var(--sd), -4px -4px 8px var(--ht), inset -2px -2px 4px var(--it), inset 2px 2px 4px var(--ht); }
+    .c-btn:active { transform: scale(0.9); box-shadow: inset 3px 3px 6px var(--it), inset -3px -3px 6px var(--ht); }
+    .active { color: var(--pn) !important; background: var(--ac) !important; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.3), inset -3px -3px 6px rgba(255,255,255,0.05) !important; }
 
-            .ftr {
-                margin-top: auto;
-                padding: 2rem 1rem 1rem;
-            }
-            .hr {
-                height: 1px;
-                background: var(--bd);
-                margin-bottom: 2rem;
-                box-shadow: 0 1px 0 var(--ht);
-            }
-            .ftr-c {
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                flex-wrap: wrap;
-                gap: 1rem;
-            }
+    main { flex: 1; padding: 1rem; background: transparent; color: inherit; }
 
-            .code-wrap {
-                position: relative;
-            }
-            .code-copy {
-                position: absolute;
-                top: 0.5rem;
-                right: 0.5rem;
-                width: 28px;
-                height: 28px;
-                border-radius: 6px;
-                border: 1px solid var(--bd);
-                background: var(--wl);
-                color: var(--tx);
-                cursor: pointer;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                opacity: 0;
-                transition:
-                    opacity 0.2s,
-                    transform 0.15s,
-                    box-shadow 0.15s;
-                box-shadow:
-                    2px 2px 6px var(--sd),
-                    -2px -2px 6px var(--ht),
-                    inset -1px -1px 3px var(--it),
-                    inset 1px 1px 3px var(--ht);
-                z-index: 1;
-            }
-            .code-wrap:hover .code-copy {
-                opacity: 1;
-            }
-            .code-copy:active {
-                transform: scale(0.9);
-                box-shadow:
-                    inset 2px 2px 4px var(--it),
-                    inset -2px -2px 4px var(--ht);
-            }
-            .code-copy.did-copy {
-                color: var(--ac);
-            }
-            .code-copy svg {
-                width: 14px;
-                height: 14px;
-                pointer-events: none;
-                display: block;
-            }
+    .ftr { margin-top: auto; padding: 2rem 1rem 1rem; }
+    .hr { height: 1px; background: var(--bd); margin-bottom: 2rem; box-shadow: 0 1px 0 var(--ht); }
+    .ftr-c { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
 
-            pre,
-            code {
-                background: var(--wl);
-                border: 1px solid var(--bd);
-                border-radius: 6px;
-                font-size: 0.82rem;
-                box-shadow:
-                    inset 2px 2px 5px var(--it),
-                    inset -2px -2px 5px var(--ht);
-            }
-            pre {
-                padding: 0.4rem 0.6rem;
-                margin: 0.2rem 0;
-                overflow-x: auto;
-            }
-            code {
-                padding: 0.1em 0.3em;
-            }
-            pre code {
-                all: unset;
-            }
+    .code-wrap { position: relative; }
+    .code-copy { position: absolute; top: 0.5rem; right: 0.5rem; width: 28px; height: 28px; border-radius: 6px; border: 1px solid var(--bd); background: var(--wl); color: var(--tx); cursor: pointer; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity .2s, transform .15s, box-shadow .15s; box-shadow: 2px 2px 6px var(--sd), -2px -2px 6px var(--ht), inset -1px -1px 3px var(--it), inset 1px 1px 3px var(--ht); z-index: 1; }
+    .code-wrap:hover .code-copy { opacity: 1; }
+    .code-copy:active { transform: scale(0.9); box-shadow: inset 2px 2px 4px var(--it), inset -2px -2px 4px var(--ht); }
+    .code-copy.did-copy { color: var(--ac); }
+    .code-copy svg { width: 14px; height: 14px; pointer-events: none; display: block; }
 
-            table {
-                width: 100%;
-                border-collapse: separate;
-                border-spacing: 0;
-                margin: 0.75rem 0;
-                border-radius: 10px;
-                border: 1px solid var(--bd);
-                overflow: hidden;
-                box-shadow:
-                    4px 4px 12px var(--sd),
-                    -4px -4px 12px var(--ht),
-                    inset -2px -2px 6px var(--it),
-                    inset 2px 2px 6px var(--ht);
-            }
-            thead {
-                background: var(--wl);
-                box-shadow:
-                    inset -2px -2px 4px var(--it),
-                    inset 2px 2px 4px var(--ht);
-            }
-            th {
-                padding: 0.5rem 0.8rem;
-                text-align: left;
-                font-size: 0.75rem;
-                font-weight: 700;
-                text-transform: uppercase;
-                letter-spacing: 0.07em;
-                color: var(--tx);
-                border-bottom: 1px solid var(--bd);
-            }
-            td {
-                padding: 0.5rem 0.8rem;
-                font-size: 0.82rem;
-                border-bottom: 1px solid var(--bd);
-            }
-            tbody tr:last-child td {
-                border-bottom: none;
-            }
-            tbody tr:hover {
-                background: var(--wl);
-            }
+    pre, code { background: var(--wl); border: 1px solid var(--bd); border-radius: 6px; font-size: 0.82rem; box-shadow: inset 2px 2px 5px var(--it), inset -2px -2px 5px var(--ht); }
+    pre { padding: 0.4rem 0.6rem; margin: 0.2rem 0; overflow-x: auto; }
+    code { padding: 0.1em 0.3em; }
+    pre code { all: unset; }
 
-            @media (max-width: 786px) {
-                .rel-path {
-                    display: none;
-                }
-                .a-lnk span {
-                    max-width: 80px;
-                }
-                .h-btm {
-                    padding: 0 0.5rem 0.5rem;
-                }
-                .code-copy {
-                    opacity: 1;
-                }
-            }
+    table { width: 100%; border-collapse: separate; border-spacing: 0; margin: 0.75rem 0; border-radius: 10px; border: 1px solid var(--bd); overflow: hidden; box-shadow: 4px 4px 12px var(--sd), -4px -4px 12px var(--ht), inset -2px -2px 6px var(--it), inset 2px 2px 6px var(--ht); }
+    thead { background: var(--wl); box-shadow: inset -2px -2px 4px var(--it), inset 2px 2px 4px var(--ht); }
+    th { padding: 0.5rem 0.8rem; text-align: left; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--tx); border-bottom: 1px solid var(--bd); }
+    td { padding: 0.5rem 0.8rem; font-size: 0.82rem; border-bottom: 1px solid var(--bd); }
+    tbody tr:last-child td { border-bottom: none; }
+    tbody tr:hover { background: var(--wl); }
 
-            [data-theme="light"] .d-only,
-            [data-theme="dark"] .l-only {
-                display: none;
-            }
+    @media (max-width: 786px) {
+      .rel-path { display: none; }
+      .a-lnk span { max-width: 80px; }
+      .h-btm { padding: 0 0.5rem 0.5rem; }
+      .code-copy { opacity: 1; }
+    }
 
-            .highlight pre {
-                margin: 0;
-                padding: 1rem 1.2rem;
-                overflow-x: auto;
-                border-radius: 12px;
-                font-size: 0.82rem;
-                line-height: 1.6;
-                font-family:
-                    ui-monospace, "Cascadia Code", "Fira Code", "Consolas",
-                    monospace;
-                background: var(--wl);
-                color: var(--tx);
-            }
-            .highlight .hll {
-                display: block;
-            }
-            .highlight .c,
-            .highlight .c1,
-            .highlight .cm,
-            .highlight .cs,
-            .highlight .cp {
-                color: var(--tx);
-                opacity: 0.5;
-                font-style: italic;
-            }
-            .highlight .k,
-            .highlight .kd,
-            .highlight .kn,
-            .highlight .kp,
-            .highlight .kr,
-            .highlight .kt {
-                color: var(--ac);
-                font-weight: 600;
-            }
-            .highlight .s,
-            .highlight .s1,
-            .highlight .s2,
-            .highlight .sb,
-            .highlight .sc,
-            .highlight .sd,
-            .highlight .se,
-            .highlight .sh,
-            .highlight .si,
-            .highlight .sx,
-            .highlight .sr,
-            .highlight .ss {
-                color: var(--ac2);
-            }
-            .highlight .m,
-            .highlight .mb,
-            .highlight .mf,
-            .highlight .mh,
-            .highlight .mi,
-            .highlight .mo,
-            .highlight .il {
-                color: var(--ac);
-                opacity: 0.8;
-            }
-            .highlight .na,
-            .highlight .nb,
-            .highlight .nc,
-            .highlight .nd,
-            .highlight .ni,
-            .highlight .ne,
-            .highlight .nf,
-            .highlight .nl,
-            .highlight .nn,
-            .highlight .nt,
-            .highlight .nv,
-            .highlight .bp,
-            .highlight .vc,
-            .highlight .vg,
-            .highlight .vi {
-                color: var(--ac2);
-                opacity: 0.7;
-            }
-            .highlight .o,
-            .highlight .ow {
-                color: var(--ac);
-            }
-            .highlight .p {
-                color: var(--tx);
-                opacity: 0.7;
-            }
-            .highlight .gh,
-            .highlight .gu {
-                color: var(--ac);
-                font-weight: 700;
-            }
-            .highlight .gi {
-                color: var(--ac);
-                background: var(--ht);
-            }
-            .highlight .gd {
-                color: var(--ac2);
-                background: var(--it);
-            }
-        </style>
+    [data-theme="light"] .d-only, [data-theme="dark"] .l-only { display: none; }
 
-        {{ page.head_extra }}
-    </head>
-    <body>
-        <div class="bg-custom">{{ site.background-html }}</div>
+    .highlight pre { margin: 0; padding: 1rem 1.2rem; overflow-x: auto; border-radius: 12px; font-size: 0.82rem; line-height: 1.6; font-family: ui-monospace, "Cascadia Code", "Fira Code", "Consolas", monospace; background: var(--wl); color: var(--tx); }
+    .highlight .hll { display: block; }
+    .highlight .c, .highlight .c1, .highlight .cm, .highlight .cs, .highlight .cp { color: var(--tx); opacity: 0.5; font-style: italic; }
+    .highlight .k, .highlight .kd, .highlight .kn, .highlight .kp, .highlight .kr, .highlight .kt { color: var(--ac); font-weight: 600; }
+    .highlight .s, .highlight .s1, .highlight .s2, .highlight .sb, .highlight .sc, .highlight .sd, .highlight .se, .highlight .sh, .highlight .si, .highlight .sx, .highlight .sr, .highlight .ss { color: var(--ac2); }
+    .highlight .m, .highlight .mb, .highlight .mf, .highlight .mh, .highlight .mi, .highlight .mo, .highlight .il { color: var(--ac); opacity: 0.8; }
+    .highlight .na, .highlight .nb, .highlight .nc, .highlight .nd, .highlight .ni, .highlight .ne, .highlight .nf, .highlight .nl, .highlight .nn, .highlight .nt, .highlight .nv, .highlight .bp, .highlight .vc, .highlight .vg, .highlight .vi { color: var(--ac2); opacity: 0.7; }
+    .highlight .o, .highlight .ow { color: var(--ac); }
+    .highlight .p { color: var(--tx); opacity: 0.7; }
+    .highlight .gh, .highlight .gu { color: var(--ac); font-weight: 700; }
+    .highlight .gi { color: var(--ac); background: var(--ht); }
+    .highlight .gd { color: var(--ac2); background: var(--it); }
+  </style>
 
-        <div class="pnl">
-            <header class="hdr" id="h">
-                <div class="hdr-ov">
-                    <div class="h-top">
-                        <a href="{{ '/' | relative_url }}" class="h-logo">
-                            {% assign headericon = page.headericon | default:
-                            site.header.logo %} {% if headericon %}<img
-                                src="{{ headericon | relative_url }}"
-                                alt=""
-                            />{% endif %}
-                        </a>
+  {{ page.head_extra }}
+</head>
+<body>
+  <div class="bg-custom">{{ site.background-html }}</div>
 
-                        <div class="rel-path">
-                            {% assign url_parts = page.url | split: '/' %} {%
-                            assign cumulative = '' %} {% for part in url_parts
-                            %} {% if part == '' %}{% continue %}{% endif %} {%
-                            assign cumulative = cumulative | append: '/' |
-                            append: part %} {% assign is_last = forloop.last %}
-                            {% assign is_index = false %} {% if part ==
-                            'index.html' or part == 'index.htm' %}{% assign
-                            is_index = true %}{% endif %}
-                            <span class="sep">/</span>
-                            {% if is_last %} {% unless is_index %}<b
-                                >{{ part }}</b
-                            >{% endunless %} {% else %}
-                            <a href="{{ cumulative | relative_url }}"
-                                >{{ part }}</a
-                            >
-                            {% endif %} {% endfor %}
-                        </div>
+  <div class="pnl">
+    <header class="hdr" id="h">
+      <div class="hdr-ov">
+        <div class="h-top">
+          <a href="{{ '/' | relative_url }}" class="h-logo">
+            {% assign headericon = page.headericon | default: site.header.logo %}
+            {% if headericon %}<img src="{{ headericon | relative_url }}" alt="">{% endif %}
+          </a>
 
-                        <div class="util">
-                            {% assign btn_th = site.header.buttons.appearance %}
-                            {% unless btn_th.show == false %}
-                            <button class="c-btn" id="tB" title="Theme">
-                                <svg
-                                    class="l-only"
-                                    viewBox="0 0 24 24"
-                                    width="16"
-                                >
-                                    <path
-                                        fill="currentColor"
-                                        d="M12,18c-3.3,0-6-2.7-6-6s2.7-6,6-6s6,2.7,6,6S15.3,18,12,18zM11,1h2v3h-2V1z M11,20h2v3h-2V20z M3.5,4.9l1.4-1.4l2.1,2.1L5.6,7.1L3.5,4.9z M16.9,18.3l1.4-1.4l2.1,2.1l-1.4,1.4L16.9,18.3z M1,11h3v2H1V11z M20,11h3v2h-3V11z M4.9,20.5l-1.4-1.4l2.1-2.1l1.4,1.4L4.9,20.5z M18.3,7.1l-1.4-1.4l2.1-2.1l1.4,1.4L18.3,7.1z"
-                                    />
-                                </svg>
-                                <svg
-                                    class="d-only"
-                                    viewBox="0 0 24 24"
-                                    width="16"
-                                >
-                                    <path
-                                        fill="currentColor"
-                                        d="M12,3c-4.97,0-9,4.03-9,9s4.03,9,9,9s9-4.03,9-9c0-0.46-0.04-0.92-0.1-1.36c-0.98,1.37-2.58,2.26-4.4,2.26 c-2.98,0-5.4-2.42-5.4-5.4c0-1.81,0.89-3.42,2.26-4.4C12.92,3.04,12.46,3,12,3z"
-                                    />
-                                </svg>
-                            </button>
-                            {% endunless %} {% assign btn_pin =
-                            site.header.buttons.pin-header %} {% unless
-                            btn_pin.show == false %}
-                            <button class="c-btn" id="pB" title="Pin">
-                                <svg viewBox="0 0 24 24" width="16">
-                                    <path
-                                        fill="currentColor"
-                                        d="M16,12V4H17V2H7V4H8V12L6,14V16H11.2V22H12.8V16H18V14L16,12Z"
-                                    />
-                                </svg>
-                            </button>
-                            {% endunless %}
-                        </div>
-                    </div>
+          <div class="rel-path">
+            {% assign url_parts = page.url | split: '/' %}
+            {% assign cumulative = '' %}
+            {% for part in url_parts %}
+              {% if part == '' %}{% continue %}{% endif %}
+              {% assign cumulative = cumulative | append: '/' | append: part %}
+              {% assign is_last = forloop.last %}
+              {% assign is_index = false %}
+              {% if part == 'index.html' or part == 'index.htm' %}{% assign is_index = true %}{% endif %}
+              <span class="sep">/</span>
+              {% if is_last %}
+                {% unless is_index %}<b>{{ part }}</b>{% endunless %}
+              {% else %}
+                <a href="{{ cumulative | relative_url }}">{{ part }}</a>
+              {% endif %}
+            {% endfor %}
+          </div>
 
-                    <nav class="h-btm">
-                        {% assign h_links = site.header.a | sort: 'order' %} {%
-                        for link in h_links %}
-                        <a href="{{ link.url | relative_url }}" class="a-lnk">
-                            {% if link.icon %}<img
-                                src="{{ link.icon | relative_url }}"
-                            />{% endif %}
-                            <span>{{ link.text }}</span>
-                        </a>
-                        {% endfor %}
-                    </nav>
-                </div>
-            </header>
-
-            <main>{{ content }}</main>
-
-            <footer class="ftr">
-                <div class="hr"></div>
-                <div class="ft-c">
-                    <div class="f-logo">
-                        {% if site.footer.logo.link %}<img
-                            src="{{ site.footer.logo.link | relative_url }}"
-                            alt=""
-                        />{% endif %}
-                    </div>
-                    <nav class="util" style="margin: 0; opacity: 0.6">
-                        {% assign f_links = site.footer.a | sort: 'order' %} {%
-                        for link in f_links %}
-                        <a href="{{ link.url | relative_url }}" class="a-lnk"
-                            ><span>{{ link.text }}</span></a
-                        >
-                        {% endfor %}
-                    </nav>
-                </div>
-            </footer>
-            <div align="center" style="opacity: 0.4; font-weight: 600">
-                {{ site.footer.notice-text }}
-            </div>
-        </div>
-
-        <script>
-            const r = document.documentElement, h = document.getElementById('h');
-
-            r.setAttribute('data-theme', 'dark');
-
-            let consent = localStorage.getItem('consent') === 'true';
-            let dontshow = sessionStorage.getItem('dontshow') === 'true';
-
-            const save = (key, val) => {
-              if (consent) {
-                localStorage.setItem(key, val);
-                return;
-              }
-              if (dontshow) return;
-              if (confirm("Save preferences to this device?")) {
-                localStorage.setItem('consent', 'true');
-                consent = true;
-                localStorage.setItem(key, val);
-              } else {
-                sessionStorage.setItem('dontshow', 'true');
-                dontshow = true;
-              }
-            };
-
+          <div class="util">
             {% assign btn_th = site.header.buttons.appearance %}
             {% unless btn_th.show == false %}
-            (function () {
-              const tB = document.getElementById('tB');
-              const prePressed = '{{ btn_th.pre-pressed | default: 'auto' }}';
-              const apply = v => r.setAttribute('data-theme', v);
-              const saved = localStorage.getItem('th');
-              if (prePressed === 'dark') {
-                apply('dark');
-              } else if (prePressed === 'light') {
-                apply('light');
-              } else if (saved) {
-                apply(saved);
-              } else if (window.matchMedia('(prefers-color-scheme: light)').matches) {
-                apply('light');
-              }
-              tB.onclick = () => {
-                const v = r.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-                apply(v);
-                save('th', v);
-              };
-            })();
+            <button class="c-btn" id="tB" title="Theme">
+              <svg class="l-only" viewBox="0 0 24 24" width="16"><path fill="currentColor" d="M12,18c-3.3,0-6-2.7-6-6s2.7-6,6-6s6,2.7,6,6S15.3,18,12,18zM11,1h2v3h-2V1z M11,20h2v3h-2V20z M3.5,4.9l1.4-1.4l2.1,2.1L5.6,7.1L3.5,4.9z M16.9,18.3l1.4-1.4l2.1,2.1l-1.4,1.4L16.9,18.3z M1,11h3v2H1V11z M20,11h3v2h-3V11z M4.9,20.5l-1.4-1.4l2.1-2.1l1.4,1.4L4.9,20.5z M18.3,7.1l-1.4-1.4l2.1-2.1l1.4,1.4L18.3,7.1z"/></svg>
+              <svg class="d-only" viewBox="0 0 24 24" width="16"><path fill="currentColor" d="M12,3c-4.97,0-9,4.03-9,9s4.03,9,9,9s9-4.03,9-9c0-0.46-0.04-0.92-0.1-1.36c-0.98,1.37-2.58,2.26-4.4,2.26 c-2.98,0-5.4-2.42-5.4-5.4c0-1.81,0.89-3.42,2.26-4.4C12.92,3.04,12.46,3,12,3z"/></svg>
+            </button>
             {% endunless %}
-
             {% assign btn_pin = site.header.buttons.pin-header %}
             {% unless btn_pin.show == false %}
-            (function () {
-              const pB = document.getElementById('pB');
-              const prePressed = '{{ btn_pin.pre-pressed | default: 'auto' }}';
-              const apply = v => { h.classList.toggle('sticky', v); pB.classList.toggle('active', v); };
-              const saved = localStorage.getItem('pi');
-              if (prePressed === 'yes') {
-                apply(true);
-              } else if (prePressed === 'no') {
-                apply(false);
-              } else if (saved !== null) {
-                apply(saved === 'true');
-              }
-              pB.onclick = () => {
-                const s = !h.classList.contains('sticky');
-                apply(s);
-                save('pi', s);
-              };
-            })();
+            <button class="c-btn" id="pB" title="Pin"><svg viewBox="0 0 24 24" width="16"><path fill="currentColor" d="M16,12V4H17V2H7V4H8V12L6,14V16H11.2V22H12.8V16H18V14L16,12Z"/></svg></button>
             {% endunless %}
+          </div>
+        </div>
 
-            const COPY  = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
-            const CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>';
+        <nav class="h-btm">
+          {% assign h_links = site.header.a | sort: 'order' %}
+          {% for link in h_links %}
+            <a href="{{ link.url | relative_url }}" class="a-lnk">
+              {% if link.icon %}<img src="{{ link.icon | relative_url }}">{% endif %}
+              <span>{{ link.text }}</span>
+            </a>
+          {% endfor %}
+        </nav>
+      </div>
+    </header>
 
-            document.querySelectorAll('pre code').forEach(c => {
-              const pre = c.parentElement;
-              if (pre.parentElement.classList.contains('code-wrap')) return;
-              const wrap = document.createElement('div');
-              wrap.className = 'code-wrap';
-              pre.parentNode.insertBefore(wrap, pre);
-              wrap.appendChild(pre);
-              const btn = document.createElement('button');
-              btn.className = 'code-copy';
-              btn.setAttribute('aria-label', 'copy code');
-              btn.innerHTML = COPY;
-              btn.onclick = () => {
-                if (!navigator.clipboard) return;
-                navigator.clipboard.writeText(c.textContent).then(() => {
-                  btn.innerHTML = CHECK;
-                  btn.classList.add('did-copy');
-                  setTimeout(() => { btn.innerHTML = COPY; btn.classList.remove('did-copy'); }, 2000);
-                }).catch(() => {});
-              };
-              wrap.appendChild(btn);
-            });
-        </script>
-        {{ page.foot_extra }}
-    </body>
+    <main>{{ content }}</main>
+
+    <footer class="ftr">
+      <div class="hr"></div>
+      <div class="ft-c">
+        <div class="f-logo">
+          {% if site.footer.logo.link %}<img src="{{ site.footer.logo.link | relative_url }}" alt="">{% endif %}
+        </div>
+        <nav class="util" style="margin:0; opacity:0.6">
+          {% assign f_links = site.footer.a | sort: 'order' %}
+          {% for link in f_links %}
+            <a href="{{ link.url | relative_url }}" class="a-lnk"><span>{{ link.text }}</span></a>
+          {% endfor %}
+        </nav>
+      </div>
+    </footer>
+    <div align="center" style="opacity:0.4; font-weight:600">{{ site.footer.notice-text }}</div>
+  </div>
+
+  <script>
+    const r = document.documentElement, h = document.getElementById('h');
+
+    r.setAttribute('data-theme', 'dark');
+
+    let consent = localStorage.getItem('consent') === 'true';
+    let dontshow = sessionStorage.getItem('dontshow') === 'true';
+
+    const save = (key, val) => {
+      if (consent) {
+        localStorage.setItem(key, val);
+        return;
+      }
+      if (dontshow) return;
+      if (confirm("Save preferences to this device?")) {
+        localStorage.setItem('consent', 'true');
+        consent = true;
+        localStorage.setItem(key, val);
+      } else {
+        sessionStorage.setItem('dontshow', 'true');
+        dontshow = true;
+      }
+    };
+
+    {% assign btn_th = site.header.buttons.appearance %}
+    {% unless btn_th.show == false %}
+    (function () {
+      const tB = document.getElementById('tB');
+      const prePressed = '{{ btn_th.pre-pressed | default: 'auto' }}';
+      const apply = v => r.setAttribute('data-theme', v);
+      const saved = localStorage.getItem('th');
+      if (prePressed === 'dark') {
+        apply('dark');
+      } else if (prePressed === 'light') {
+        apply('light');
+      } else if (saved) {
+        apply(saved);
+      } else if (window.matchMedia('(prefers-color-scheme: light)').matches) {
+        apply('light');
+      }
+      tB.onclick = () => {
+        const v = r.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        apply(v);
+        save('th', v);
+      };
+    })();
+    {% endunless %}
+
+    {% assign btn_pin = site.header.buttons.pin-header %}
+    {% unless btn_pin.show == false %}
+    (function () {
+      const pB = document.getElementById('pB');
+      const prePressed = '{{ btn_pin.pre-pressed | default: 'auto' }}';
+      const apply = v => { h.classList.toggle('sticky', v); pB.classList.toggle('active', v); };
+      const saved = localStorage.getItem('pi');
+      if (prePressed === 'yes') {
+        apply(true);
+      } else if (prePressed === 'no') {
+        apply(false);
+      } else if (saved !== null) {
+        apply(saved === 'true');
+      }
+      pB.onclick = () => {
+        const s = !h.classList.contains('sticky');
+        apply(s);
+        save('pi', s);
+      };
+    })();
+    {% endunless %}
+
+    const COPY  = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+    const CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>';
+
+    document.querySelectorAll('pre code').forEach(c => {
+      const pre = c.parentElement;
+      if (pre.parentElement.classList.contains('code-wrap')) return;
+      const wrap = document.createElement('div');
+      wrap.className = 'code-wrap';
+      pre.parentNode.insertBefore(wrap, pre);
+      wrap.appendChild(pre);
+      const btn = document.createElement('button');
+      btn.className = 'code-copy';
+      btn.setAttribute('aria-label', 'copy code');
+      btn.innerHTML = COPY;
+      btn.onclick = () => {
+        if (!navigator.clipboard) return;
+        navigator.clipboard.writeText(c.textContent).then(() => {
+          btn.innerHTML = CHECK;
+          btn.classList.add('did-copy');
+          setTimeout(() => { btn.innerHTML = COPY; btn.classList.remove('did-copy'); }, 2000);
+        }).catch(() => {});
+      };
+      wrap.appendChild(btn);
+    });
+  </script>
+  {{ page.foot_extra }}
+</body>
 </html>
