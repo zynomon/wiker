@@ -122,6 +122,9 @@
     .rel-path a:hover { text-decoration: underline; opacity: 1; }
     .sep { opacity: 0.2; font-weight: 300; padding: 0 4px; }
 
+a { color: var(--ac); text-decoration: none; position: relative; }
+a::after { content: ''; position: absolute; bottom: -1px; left: 50%; width: 0; height: 1px; background: var(--ac); transition: width 0.3s, left 0.3s; }
+a:hover::after { width: 100%; left: 0; }
     .a-lnk { padding: 8px 12px; text-decoration: none; color: inherit; font-weight: 600; display: flex; align-items: center; position: relative; }
     .a-lnk span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
@@ -261,7 +264,6 @@
     </footer>
     <div align="center" style="opacity:0.4; font-weight:600">{{ site.footer.notice-text }}</div>
   </div>
-
   <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
   <script>
     const r = document.documentElement, h = document.getElementById('h');
@@ -299,6 +301,65 @@
       return '#' + m.slice(0,3).map(v => parseInt(v).toString(16).padStart(2,'0')).join('');
     };
 
+    const ICONS = {
+      zoomIn: 'https://github.com/KDE/oxygen-icons/raw/master/48x48/actions/zoom-in.png',
+      zoomOut: 'https://github.com/KDE/oxygen-icons/raw/master/48x48/actions/zoom-out.png',
+      zoomFit: 'https://github.com/KDE/oxygen-icons/raw/master/48x48/actions/zoom-fit-best.png',
+      reload: 'https://github.com/KDE/oxygen-icons/raw/master/256x256/actions/view-refresh.png',
+      fullscreen: 'https://github.com/KDE/oxygen-icons/raw/master/32x32/actions/window-new.png'
+    };
+
+    const makeToolbar = (container, svg) => {
+      const toolbar = document.createElement('div');
+      toolbar.className = 'mermaid-toolbar';
+      toolbar.style.cssText = 'position:absolute;top:4px;right:4px;display:flex;gap:2px;z-index:10;opacity:0;transition:opacity 0.2s;';
+      container.style.position = 'relative';
+      container.addEventListener('mouseenter', () => { toolbar.style.opacity = '1'; });
+      container.addEventListener('mouseleave', () => { toolbar.style.opacity = '0'; });
+
+      let scale = 1;
+      const updateTransform = () => {
+        svg.style.transform = `scale(${scale})`;
+        svg.style.transformOrigin = 'top left';
+      };
+
+      const btn = (icon, title, fn) => {
+        const b = document.createElement('button');
+        b.className = 'c-btn';
+        b.style.cssText = 'width:24px;height:24px;padding:2px;';
+        b.title = title;
+        const img = document.createElement('img');
+        img.src = icon;
+        img.style.cssText = 'width:14px;height:14px;';
+        b.appendChild(img);
+        b.onclick = (e) => { e.stopPropagation(); fn(); };
+        return b;
+      };
+
+      toolbar.appendChild(btn(ICONS.zoomIn, 'Zoom in', () => { scale = Math.min(5, scale + 0.25); updateTransform(); }));
+      toolbar.appendChild(btn(ICONS.zoomOut, 'Zoom out', () => { scale = Math.max(0.25, scale - 0.25); updateTransform(); }));
+      toolbar.appendChild(btn(ICONS.zoomFit, 'Fit', () => { scale = 1; updateTransform(); }));
+      toolbar.appendChild(btn(ICONS.reload, 'Reload', () => {
+        const original = container.getAttribute('data-original');
+        if (original) {
+          container.removeAttribute('data-processed');
+          container.innerHTML = original;
+          mermaid.run();
+        }
+      }));
+      toolbar.appendChild(btn(ICONS.fullscreen, 'Fullscreen', () => {
+        const overlay = document.createElement('div');
+        overlay.style.cssText = 'position:fixed;inset:0;z-index:999999;background:var(--bg);display:flex;align-items:center;justify-content:center;overflow:auto;padding:2rem;';
+        const clone = svg.cloneNode(true);
+        clone.style.cssText = 'max-width:95vw;max-height:95vh;width:auto;height:auto;';
+        overlay.appendChild(clone);
+        overlay.onclick = () => { overlay.remove(); };
+        document.body.appendChild(overlay);
+      }));
+
+      container.appendChild(toolbar);
+    };
+
     const initMermaid = () => {
       mermaid.initialize({
         startOnLoad: false,
@@ -317,7 +378,44 @@
           background: getHex('--bg')
         }
       });
-      mermaid.run();
+
+      document.querySelectorAll('pre code.language-mermaid').forEach((code, i) => {
+        const pre = code.parentElement;
+        const source = code.textContent;
+        pre.classList.add('mermaid');
+        pre.setAttribute('data-original', source);
+        pre.innerHTML = source;
+        pre.id = 'mermaid-' + i;
+      });
+
+      mermaid.run().then(() => {
+        document.querySelectorAll('pre.mermaid').forEach(pre => {
+          const svg = pre.querySelector('svg');
+          if (svg) {
+            pre.style.overflow = 'hidden';
+            makeToolbar(pre, svg);
+          }
+        });
+      });
+    };
+
+    const reinitMermaid = () => {
+      document.querySelectorAll('pre.mermaid').forEach(el => {
+        const original = el.getAttribute('data-original');
+        if (original) {
+          el.removeAttribute('data-processed');
+          el.innerHTML = original;
+        }
+      });
+      mermaid.run().then(() => {
+        document.querySelectorAll('pre.mermaid').forEach(pre => {
+          const svg = pre.querySelector('svg');
+          if (svg && !pre.querySelector('.mermaid-toolbar')) {
+            pre.style.overflow = 'hidden';
+            makeToolbar(pre, svg);
+          }
+        });
+      });
     };
 
     {% assign btn_th = site.header.buttons.appearance %}
@@ -340,12 +438,9 @@
         const v = r.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
         apply(v);
         save('th', v);
-        document.querySelectorAll('.mermaid').forEach(el => {
-          el.removeAttribute('data-processed');
-          el.innerHTML = el.getAttribute('data-original') || el.textContent;
-          el.setAttribute('data-original', el.textContent);
+        requestAnimationFrame(() => {
+          reinitMermaid();
         });
-        mermaid.run();
       };
     })();
     {% endunless %}
@@ -397,7 +492,11 @@
       wrap.appendChild(btn);
     });
 
-    initMermaid();
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        initMermaid();
+      });
+    });
   </script>
 
   {{ page.foot_extra }}
