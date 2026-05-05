@@ -34,6 +34,8 @@
   <link rel="apple-touch-icon"          href="{{ favicon | relative_url }}">
   {% endif %}
 
+
+
   <style>
     :root,
     [data-accent=""],
@@ -260,6 +262,7 @@
     <div align="center" style="opacity:0.4; font-weight:600">{{ site.footer.notice-text }}</div>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
   <script>
     const r = document.documentElement, h = document.getElementById('h');
 
@@ -284,6 +287,39 @@
       }
     };
 
+    const getHex = (prop) => {
+      const d = document.createElement('div');
+      d.style.display = 'none';
+      document.body.appendChild(d);
+      d.style.color = `var(${prop})`;
+      const rgb = getComputedStyle(d).color;
+      document.body.removeChild(d);
+      const m = rgb.match(/[\d.]+/g);
+      if (!m || m.length < 3) return '#000000';
+      return '#' + m.slice(0,3).map(v => parseInt(v).toString(16).padStart(2,'0')).join('');
+    };
+
+    const initMermaid = () => {
+      mermaid.initialize({
+        startOnLoad: false,
+        theme: 'base',
+        themeVariables: {
+          primaryColor: getHex('--ac'),
+          primaryBorderColor: getHex('--ac'),
+          primaryTextColor: getHex('--tx'),
+          secondaryColor: getHex('--wl'),
+          secondaryTextColor: getHex('--tx'),
+          tertiaryColor: getHex('--pn'),
+          lineColor: getHex('--ac2'),
+          textColor: getHex('--tx'),
+          mainBkg: getHex('--pn'),
+          nodeBorder: getHex('--ac'),
+          background: getHex('--bg')
+        }
+      });
+      mermaid.run();
+    };
+
     {% assign btn_th = site.header.buttons.appearance %}
     {% unless btn_th.show == false %}
     (function () {
@@ -304,6 +340,12 @@
         const v = r.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
         apply(v);
         save('th', v);
+        document.querySelectorAll('.mermaid').forEach(el => {
+          el.removeAttribute('data-processed');
+          el.innerHTML = el.getAttribute('data-original') || el.textContent;
+          el.setAttribute('data-original', el.textContent);
+        });
+        mermaid.run();
       };
     })();
     {% endunless %}
@@ -354,7 +396,10 @@
       };
       wrap.appendChild(btn);
     });
+
+    initMermaid();
   </script>
+
   {{ page.foot_extra }}
 </body>
 </html>
